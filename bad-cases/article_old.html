@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bad Case · LiTianHao</title>
+<meta name="description" content="Bad Case 系列文章 by LiTianHao">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<!-- markdown 渲染器 -->
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+<!-- 代码高亮 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+
+<style>
+  :root {
+    --bg: #0E0E0C;
+    --bg-card: #1A1A17;
+    --text: #E8E6E0;
+    --text-soft: rgba(232, 230, 224, 0.7);
+    --text-mute: rgba(232, 230, 224, 0.45);
+    --text-faint: rgba(232, 230, 224, 0.3);
+    --accent: #D97757;
+    --border: rgba(232, 230, 224, 0.08);
+    --border-faint: rgba(232, 230, 224, 0.05);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body { overflow-x: hidden; }
+  ::-webkit-scrollbar { width: 0; }
+
+  .font-mono { font-family: 'IBM Plex Mono', monospace; }
+
+  /* ===== 顶部导航 ===== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(14, 14, 12, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-faint);
+  }
+  .nav-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .logo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .logo .brace { color: var(--accent); }
+  .nav-actions {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--text-mute);
+  }
+  .nav-actions a, .nav-actions button {
+    color: var(--text-mute);
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    transition: color 0.2s ease;
+    padding: 0;
+  }
+  .nav-actions a:hover, .nav-actions button:hover { color: var(--accent); }
+
+  /* ===== 文章容器 ===== */
+  .article-wrapper {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+
+  /* ===== 文章头部元信息 ===== */
+  .article-meta-bar {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .article-meta-bar .badge {
+    background: rgba(217, 119, 87, 0.12);
+    color: var(--accent);
+    padding: 3px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.08em;
+  }
+
+  /* ===== 加载态 ===== */
+  .loading {
+    text-align: center;
+    padding: 80px 0;
+    color: var(--text-mute);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+  }
+  .loading::before {
+    content: '> ';
+    color: var(--accent);
+  }
+  .error {
+    background: rgba(217, 119, 87, 0.08);
+    border-left: 2px solid var(--accent);
+    padding: 24px;
+    margin: 32px 0;
+  }
+  .error h3 {
+    color: var(--accent);
+    font-size: 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+  .error code {
+    background: rgba(0,0,0,0.3);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+  }
+
+  /* ===== Markdown 内容样式 ===== */
+  .article-body {
+    font-size: 16px;
+    color: var(--text-soft);
+  }
+  .article-body > *:first-child { margin-top: 0; }
+  .article-body h1 {
+    font-size: 32px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.25;
+    margin: 0 0 16px;
+    letter-spacing: -0.01em;
+  }
+  .article-body h2 {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    margin: 56px 0 16px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border-faint);
+    letter-spacing: -0.005em;
+  }
+  .article-body h2:first-of-type { border-top: none; padding-top: 0; margin-top: 40px; }
+  .article-body h3 {
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--text);
+    margin: 32px 0 12px;
+  }
+  .article-body p {
+    margin: 16px 0;
+    line-height: 1.75;
+  }
+  .article-body strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+  .article-body em { color: var(--text); }
+  .article-body a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(217, 119, 87, 0.3);
+    transition: border-color 0.2s ease;
+  }
+  .article-body a:hover { border-bottom-color: var(--accent); }
+  .article-body ul, .article-body ol {
+    margin: 16px 0;
+    padding-left: 24px;
+  }
+  .article-body li { margin: 8px 0; line-height: 1.7; }
+  .article-body li::marker { color: var(--accent); }
+
+  /* ===== 引用块 ===== */
+  .article-body blockquote {
+    border-left: 2px solid var(--accent);
+    padding: 4px 0 4px 20px;
+    margin: 24px 0;
+    color: var(--text-mute);
+    font-style: normal;
+  }
+  .article-body blockquote p { margin: 8px 0; }
+  .article-body blockquote strong { color: var(--text-soft); }
+
+  /* ===== 代码 ===== */
+  .article-body code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    background: rgba(232, 230, 224, 0.06);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--text);
+  }
+  .article-body pre {
+    background: #0a0a09;
+    border: 1px solid var(--border-faint);
+    border-radius: 4px;
+    padding: 20px;
+    margin: 24px 0;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .article-body pre code {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    color: var(--text-soft);
+    font-size: 13px;
+  }
+
+  /* ===== 表格 ===== */
+  .article-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 14px;
+    border: 1px solid var(--border);
+  }
+  .article-body th {
+    background: rgba(217, 119, 87, 0.05);
+    color: var(--text);
+    font-weight: 500;
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .article-body th:last-child { border-right: none; }
+  .article-body td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-faint);
+    border-right: 1px solid var(--border-faint);
+    color: var(--text-soft);
+    vertical-align: top;
+  }
+  .article-body td:last-child { border-right: none; }
+  .article-body tr:last-child td { border-bottom: none; }
+  .article-body td strong { color: var(--text); }
+
+  /* ===== 分割线 ===== */
+  .article-body hr {
+    border: none;
+    border-top: 1px solid var(--border-faint);
+    margin: 48px 0;
+  }
+
+  /* ===== 文章底部 ===== */
+  .article-footer {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border-faint);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+  }
+  .article-footer a {
+    color: var(--text-mute);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .article-footer a:hover { color: var(--accent); }
+  .article-footer .right { color: var(--text-faint); }
+
+  /* ===== 移动端 ===== */
+  @media (max-width: 640px) {
+    .article-wrapper { padding: 40px 20px 64px; }
+    .article-body h1 { font-size: 26px; }
+    .article-body h2 { font-size: 19px; margin: 40px 0 12px; padding-top: 24px; }
+    .article-body h3 { font-size: 16px; }
+    .article-body { font-size: 15px; }
+    .article-body table { font-size: 12px; }
+    .article-body th, .article-body td { padding: 8px 10px; }
+  }
+
+  /* ===== 复制成功提示 ===== */
+  .toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: var(--bg);
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 100;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(8px);
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="logo">
+      <span class="brace">{</span>&nbsp;LiTianHao&nbsp;<span class="brace">}</span>
+    </a>
+    <div class="nav-actions">
+      <a href="../index.html#bad-cases">← 返回 Bad Cases</a>
+      <button id="copy-link" type="button">复制链接</button>
+    </div>
+  </div>
+</nav>
+
+<div class="article-wrapper">
+  <div id="meta-bar" class="article-meta-bar"></div>
+  <div id="article-content" class="article-body">
+    <div class="loading">正在加载文章...</div>
+  </div>
+  <div class="article-footer">
+    <a href="../index.html#bad-cases">← Bad Cases 列表</a>
+    <span class="right">© 2026 LiTianHao · build in public</span>
+  </div>
+</div>
+
+<div id="toast" class="toast">链接已复制 ✓</div>
+
+<script>
+/**
+ * 从 URL 取 slug 参数,默认 BC001
+ * 例:article.html?slug=BC001  →  加载 ./BC001.md
+ */
+const params = new URLSearchParams(window.location.search);
+const slug = (params.get('slug') || 'BC001').replace(/[^A-Za-z0-9_-]/g, '');
+
+// ========== 文章元信息(放在这里方便以后加新文章) ==========
+const ARTICLE_META = {
+  'BC001': {
+    title: 'BC#001 · 多轮客服场景下的指令泄露复现实验',
+    date: 'DRAFT',
+    tag: 'Instruction',
+    models: 'Qwen-Plus · DeepSeek-Chat',
+  },
+  // 以后再加 'BC002': { ... }
+};
+
+const meta = ARTICLE_META[slug];
+const metaBar = document.getElementById('meta-bar');
+if (meta) {
+  metaBar.innerHTML = `
+    <span class="badge">${meta.tag}</span>
+    <span>${meta.date}</span>
+    <span>·</span>
+    <span>${meta.models}</span>
+  `;
+  document.title = `${meta.title} · LiTianHao`;
+} else {
+  metaBar.innerHTML = `<span class="badge">UNKNOWN</span><span>${slug}</span>`;
+}
+
+// ========== 配置 marked ==========
+marked.setOptions({
+  breaks: false,
+  gfm: true,
+  // 用 highlight.js 给代码块上色
+  highlight: function (code, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      return hljs.highlight(code, { language: lang }).value;
+    }
+    return hljs.highlightAuto(code).value;
+  },
+});
+
+// ========== 加载并渲染 markdown ==========
+const contentEl = document.getElementById('article-content');
+
+fetch(`./${slug}.md`)
+  .then(res => {
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.text();
+  })
+  .then(md => {
+    contentEl.innerHTML = marked.parse(md);
+    // 渲染后再扫一遍,确保所有 <pre><code> 都被高亮
+    contentEl.querySelectorAll('pre code').forEach(block => {
+      hljs.highlightElement(block);
+    });
+  })
+  .catch(err => {
+    contentEl.innerHTML = `
+      <div class="error">
+        <h3>加载失败</h3>
+        <p>无法读取文章 <code>${slug}.md</code>。</p>
+        <p style="margin-top:12px;color:var(--text-mute);font-size:14px;">
+          错误信息:<code>${err.message}</code>
+        </p>
+        <p style="margin-top:12px;color:var(--text-mute);font-size:14px;">
+          常见原因:你直接双击打开了 HTML 文件(file:// 协议),浏览器会拒绝读取本地 markdown。
+          请在 Cursor / VSCode 用 Live Preview 打开,或部署到 Vercel / GitHub Pages 后访问。
+        </p>
+      </div>
+    `;
+  });
+
+// ========== 复制链接 ==========
+document.getElementById('copy-link').addEventListener('click', () => {
+  const url = window.location.href;
+  const fallbackCopy = (text) => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+  };
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).catch(() => fallbackCopy(url));
+  } else {
+    fallbackCopy(url);
+  }
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1600);
+});
+</script>
+
+</body>
+</html>

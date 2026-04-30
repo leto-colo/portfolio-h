@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LiTianHao — AI 训练师</title>
+<meta name="description" content="LiTianHao,26 岁,国内某军事院校毕业,从零转型 AI 训练师。Build in public.">
+<meta property="og:title" content="LiTianHao — AI 训练师">
+<meta property="og:description" content="正在成为一个能交付的 AI 训练师。Build in public.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+<style>
+  body, * { font-family: 'IBM Plex Sans', -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }
+  .font-mono { font-family: 'IBM Plex Mono', monospace; }
+  body { background: #0E0E0C; color: #E8E6E0; overflow-x: hidden; }
+  ::-webkit-scrollbar { width: 0; }
+
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-stopped { overflow: hidden; }
+
+  .text-soft { color: rgba(232, 230, 224, 0.6); }
+  .text-mute { color: rgba(232, 230, 224, 0.4); }
+  .text-faint { color: rgba(232, 230, 224, 0.3); }
+  .border-faint { border-color: rgba(232, 230, 224, 0.05); }
+
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .pulse-dot { animation: pulse 2s ease-in-out infinite; }
+
+  a { transition: color 0.2s ease; }
+  .bg-card-hover:hover { background-color: #1A1A17; }
+  .group:hover .arrow-shift { transform: translate(2px, -2px); }
+  .arrow-shift { transition: transform 0.2s ease; }
+
+  /* === Hero 动画核心样式 === */
+  .hero-mask-line {
+    overflow: hidden;
+    position: relative;
+  }
+  .hero-mask-line .line-content {
+    display: inline-block;
+    transform: translateY(110%);
+    will-change: transform;
+  }
+
+  .hero-fade {
+    opacity: 0;
+    transform: translateY(20px);
+    will-change: opacity, transform;
+  }
+
+  .hero-eye {
+    opacity: 0;
+    will-change: opacity;
+  }
+
+  .glitch-target {
+    display: inline-block;
+    position: relative;
+    color: #D97757;
+  }
+
+  .smooth-transform { transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .smooth-transform-fast { transition: transform 0.07s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .compare-btn {
+    border: 1px solid rgba(232, 230, 224, 0.25);
+    color: rgba(232, 230, 224, 0.85);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+    transition: all 0.2s ease;
+  }
+  .compare-btn:hover {
+    color: #D97757;
+    border-color: rgba(217, 119, 87, 0.7);
+  }
+  .hero-ambient {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  .hero-blob {
+    position: absolute;
+    width: 460px;
+    height: 460px;
+    border-radius: 9999px;
+    filter: blur(56px);
+    opacity: 0.12;
+    mix-blend-mode: screen;
+    animation: drift 14s ease-in-out infinite;
+  }
+  .hero-blob-a { top: -160px; left: -120px; background: #D97757; }
+  .hero-blob-b { bottom: -180px; right: -160px; background: #8BA5FF; animation-delay: -7s; }
+  .scanline {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+    background-size: 100% 4px;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  @keyframes drift {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(26px, -18px, 0) scale(1.07); }
+  }
+  .en-sub {
+    display: none;
+    font-family: 'IBM Plex Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 10px;
+    color: rgba(232, 230, 224, 0.32);
+  }
+  .float-card {
+    border: 1px solid transparent;
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.35s ease;
+  }
+  .section-reveal { will-change: opacity, transform; }
+  body[data-page-mode="enhanced"] .hero-ambient { opacity: 1; }
+  body[data-page-mode="enhanced"] .scanline { opacity: 0.08; }
+  body[data-page-mode="enhanced"] .en-sub { display: inline-block; }
+  body[data-page-mode="enhanced"] .float-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(217, 119, 87, 0.35);
+  }
+
+  /* === Bad Cases 列表中"即将发布"的占位行 === */
+  .draft-row {
+    cursor: default;
+    opacity: 0.55;
+  }
+  .draft-row:hover { background-color: #0E0E0C !important; }
+  .draft-row .draft-title { color: rgba(232, 230, 224, 0.5) !important; }
+  .draft-row .draft-arrow { display: none; }
+  .draft-row .draft-badge {
+    color: rgba(232, 230, 224, 0.4);
+    background: rgba(232, 230, 224, 0.05);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    padding: 4px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<nav class="sticky top-0 z-50 backdrop-blur-md bg-[#0E0E0C]/80 border-b border-faint">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="font-mono text-sm tracking-wider">
+      <span style="color:#D97757;">{</span>
+      <span class="mx-1">LiTianHao</span>
+      <span style="color:#D97757;">}</span>
+    </div>
+    <div class="hidden md:flex items-center gap-8 text-sm text-soft">
+      <a href="#work" class="hover:text-[#D97757]">Work</a>
+      <a href="#bad-cases" class="hover:text-[#D97757]">Bad Cases</a>
+      <a href="#tooling" class="hover:text-[#D97757]">Tooling</a>
+      <a href="#contact" class="hover:text-[#D97757]">Contact</a>
+    </div>
+    <div class="flex items-center gap-3 text-xs text-mute font-mono">
+      <span class="w-1.5 h-1.5 rounded-full pulse-dot" style="background:#D97757;"></span>
+      available
+      <button id="mode-toggle" class="compare-btn" type="button">Mode: Current</button>
+    </div>
+  </div>
+</nav>
+
+<section id="hero" class="max-w-6xl mx-auto px-6 pt-24 pb-32 relative min-h-[80vh]">
+  <div class="hero-ambient" id="hero-ambient">
+    <div class="hero-blob hero-blob-a"></div>
+    <div class="hero-blob hero-blob-b"></div>
+  </div>
+  <div class="scanline"></div>
+  <div class="grid md:grid-cols-12 gap-8 items-start relative z-10">
+    <div class="md:col-span-7">
+      <div class="font-mono text-xs text-mute mb-8 tracking-wider hero-fade">
+        // AI Trainer · Build in Public · <span id="clock">--:--:--</span>
+      </div>
+
+      <h1 class="text-5xl md:text-7xl font-light leading-[1.05] tracking-tight mb-8">
+        <div class="hero-mask-line"><span class="line-content">正在成为一个</span></div>
+        <div class="hero-mask-line"><span class="line-content font-medium">能交付的</span></div>
+        <div class="hero-mask-line">
+          <span class="line-content font-medium">
+            <span class="glitch-target" data-glitch-text="AI 训练师">AI 训练师</span><span style="color:#D97757;">.</span>
+          </span>
+        </div>
+      </h1>
+
+      <p class="text-lg text-soft max-w-md leading-relaxed mb-12 hero-fade">
+        26 岁,国内某军事院校毕业,4 年纪律训练背景。<br>
+        2025 年退役,从零转型 AI 训练师。<br>
+        <span style="color:rgba(232,230,224,0.85);">这个网站记录我的过程,不是我的成就。</span>
+      </p>
+
+      <div class="en-sub mb-12 hero-fade">from discipline to machine learning operations</div>
+
+      <div class="grid grid-cols-3 gap-px bg-[#E8E6E0]/10 max-w-md hero-fade">
+        <div class="bg-[#0E0E0C] p-5 float-card">
+          <div class="text-3xl font-light mb-1 counter" data-target="12">0</div>
+          <div class="text-[10px] text-mute leading-tight font-mono uppercase tracking-wider">Bad Cases<br>已分析</div>
+        </div>
+        <div class="bg-[#0E0E0C] p-5 float-card">
+          <div class="text-3xl font-light mb-1 counter" data-target="6">0</div>
+          <div class="text-[10px] text-mute leading-tight font-mono uppercase tracking-wider">Prompt<br>实验跑过</div>
+        </div>
+        <div class="bg-[#0E0E0C] p-5 float-card">
+          <div class="text-3xl font-light mb-1 counter" data-target="4">0</div>
+          <div class="text-[10px] text-mute leading-tight font-mono uppercase tracking-wider">学习日志<br>已发布</div>
+        </div>
+      </div>
+
+      <div class="mt-12 text-xs font-mono text-mute flex items-center gap-4 flex-wrap hero-fade">
+        <span>每天投入 4-6h</span>
+        <span style="color:rgba(232,230,224,0.2);">·</span>
+        <span>杭州</span>
+        <span style="color:rgba(232,230,224,0.2);">·</span>
+        <span style="color:#D97757;">求职中</span>
+      </div>
+    </div>
+
+    <div class="md:col-span-5 hidden md:flex justify-end items-start pt-8 hero-eye" id="eye-wrapper">
+      <div class="relative w-full max-w-[360px] aspect-square" id="eye-container">
+        <svg viewBox="0 0 400 400" class="w-full h-full">
+          <circle cx="200" cy="200" r="180" fill="none" stroke="#D97757" stroke-width="0.5" opacity="0.15"/>
+          <g id="ring-mid" class="smooth-transform">
+            <circle cx="200" cy="200" r="140" fill="none" stroke="#E8E6E0" stroke-width="0.5" opacity="0.25"/>
+            <g id="ticks"></g>
+          </g>
+          <g id="ring-inner" class="smooth-transform">
+            <circle cx="200" cy="200" r="100" fill="none" stroke="#D97757" stroke-width="1" opacity="0.5"/>
+            <circle cx="200" cy="200" r="100" fill="#D97757" opacity="0.04"/>
+          </g>
+          <g id="pupil" class="smooth-transform-fast">
+            <rect x="180" y="180" width="40" height="40" fill="#D97757"/>
+            <circle cx="200" cy="200" r="4" fill="#0E0E0C"/>
+          </g>
+          <text x="50" y="40" font-family="IBM Plex Mono, monospace" font-size="9" fill="#E8E6E0" opacity="0.3">&lt;input&gt;</text>
+          <text x="290" y="40" font-family="IBM Plex Mono, monospace" font-size="9" fill="#E8E6E0" opacity="0.3">tok_0042</text>
+          <text x="50" y="375" font-family="IBM Plex Mono, monospace" font-size="9" fill="#E8E6E0" opacity="0.3">align()</text>
+          <text x="290" y="375" font-family="IBM Plex Mono, monospace" font-size="9" fill="#D97757" opacity="0.5">&lt;output&gt;</text>
+          <text x="200" y="395" font-family="IBM Plex Mono, monospace" font-size="8" fill="#E8E6E0" opacity="0.25" text-anchor="middle" id="coord-text">x=0.50 · y=0.50</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="max-w-6xl mx-auto px-6 py-32 border-t border-faint section-reveal">
+  <div class="flex items-center gap-4 mb-8 font-mono text-xs">
+    <span style="color:#D97757;">01</span>
+    <span class="w-8 h-px" style="background:rgba(217,119,87,0.4);"></span>
+    <span class="text-soft uppercase tracking-widest">About</span> <span class="en-sub">identity</span>
+  </div>
+  <div class="max-w-2xl">
+    <p class="text-2xl md:text-3xl font-light leading-relaxed" style="color:rgba(232,230,224,0.7);">
+      我还在想怎么介绍自己。<br>
+      比起一段精心设计的 self-introduction,<br>
+      <span style="color:#E8E6E0;">我更愿意让下面的项目和 Bad Case 替我说话。</span>
+    </p>
+    <div class="mt-8 font-mono text-xs text-faint">
+      — LiTianHao, leaving this blank on purpose.
+    </div>
+  </div>
+</section>
+
+<section id="work" class="max-w-6xl mx-auto px-6 py-32 border-t border-faint section-reveal">
+  <div class="flex items-center gap-4 mb-8 font-mono text-xs">
+    <span style="color:#D97757;">02</span>
+    <span class="w-8 h-px" style="background:rgba(217,119,87,0.4);"></span>
+    <span class="text-soft uppercase tracking-widest">Work</span> <span class="en-sub">selected outputs</span>
+  </div>
+  <p class="text-mute mb-16 max-w-xl" style="color:rgba(232,230,224,0.5);">
+    这里是我作为 AI 训练师候选人的核心产出。每个项目都公开方法、原始数据、踩过的坑。
+  </p>
+
+  <div class="grid md:grid-cols-12 gap-8">
+    <div class="md:col-span-3">
+      <div class="font-mono text-xs mb-2" style="color:#D97757;">EXPERIMENT · Active</div>
+      <div class="text-7xl font-light" style="color:rgba(232,230,224,0.1);">A</div>
+    </div>
+    <div class="md:col-span-9">
+      <div class="font-mono text-xs text-mute mb-2 uppercase tracking-wider">Prompt Engineering · Evaluation</div>
+      <h3 class="text-2xl md:text-3xl font-light mb-6 leading-tight">中文长文本摘要的 Prompt 优化基准实验</h3>
+      <p class="text-soft leading-relaxed mb-8 max-w-2xl">
+        同一篇文章,GPT-5 / Claude 4.7 / Qwen3 / DeepSeek / Doubao 给出的摘要在「关键信息覆盖度」「事实准确性」「冗余度」上差异巨大。我想知道:Prompt 设计本身,到底能在多大程度上抹平模型差距?
+      </p>
+      <div class="grid grid-cols-4 gap-px bg-[#E8E6E0]/5 mb-8 max-w-2xl">
+        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">6</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">Prompt 版本</div></div>
+        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">5</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">主流模型</div></div>
+        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">5维</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">评估体系</div></div>
+        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">100</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">测试样本</div></div>
+      </div>
+      <div class="flex flex-wrap gap-4 text-sm">
+        <a href="https://github.com/LiTianHao" class="group flex items-center gap-1 text-soft hover:text-[#D97757]">GitHub Repo <span class="arrow-shift">↗</span></a>
+        <a href="#" class="group flex items-center gap-1 text-soft hover:text-[#D97757]">完整报告 PDF <span class="arrow-shift">↗</span></a>
+        <a href="#" class="group flex items-center gap-1 text-soft hover:text-[#D97757]">数据集 <span class="arrow-shift">↗</span></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="h-px bg-[#E8E6E0]/5 my-16"></div>
+
+  <div class="grid md:grid-cols-12 gap-8">
+    <div class="md:col-span-3">
+      <div class="font-mono text-xs mb-2" style="color:#D97757;">SERIES · Weekly</div>
+      <div class="text-7xl font-light" style="color:rgba(232,230,224,0.1);">B</div>
+    </div>
+    <div class="md:col-span-9">
+      <div class="font-mono text-xs text-mute mb-2 uppercase tracking-wider">Case Analysis · Continuous</div>
+      <h3 class="text-2xl md:text-3xl font-light mb-6 leading-tight">Bad Case 周更专栏</h3>
+      <p class="text-soft leading-relaxed mb-8 max-w-2xl">
+        每周拆解 1-2 个真实模型 Bad Case。触发场景 → 输出问题 → 错误归因 → 修复方案 → 训练侧启示。这不是文章合集,是我的思考路径。
+      </p>
+      <div class="grid grid-cols-4 gap-px bg-[#E8E6E0]/5 mb-8 max-w-2xl">
+        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">12</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">已发布</div></div>
+        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">5</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">归因维度</div></div>
+        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">3</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">修复方案</div></div>
+        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">∞</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">持续更新</div></div>
+      </div>
+      <div class="flex flex-wrap gap-4 text-sm">
+        <a href="#bad-cases" class="group flex items-center gap-1 text-soft hover:text-[#D97757]">查看全部 <span class="arrow-shift">↗</span></a>
+        <a href="#" class="group flex items-center gap-1 text-soft hover:text-[#D97757]">RSS 订阅 <span class="arrow-shift">↗</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="bad-cases" class="max-w-6xl mx-auto px-6 py-32 border-t border-faint section-reveal">
+  <div class="flex items-center gap-4 mb-8 font-mono text-xs">
+    <span style="color:#D97757;">03</span>
+    <span class="w-8 h-px" style="background:rgba(217,119,87,0.4);"></span>
+    <span class="text-soft uppercase tracking-widest">Bad Cases</span> <span class="en-sub">failure analysis log</span>
+  </div>
+  <p class="mb-16 max-w-xl" style="color:rgba(232,230,224,0.5);">每篇文章都有同样的结构:触发 → 现象 → 归因 → 修复 → 启示。</p>
+
+  <div class="space-y-px bg-[#E8E6E0]/5">
+    <a href="bad-cases/article.html?slug=BC001" class="group flex items-center gap-6 px-6 py-5 bg-[#0E0E0C] bg-card-hover">
+      <span class="font-mono text-xs w-12" style="color:#D97757;">BC#001</span>
+      <span class="font-mono text-xs text-faint w-24 hidden md:inline">DRAFT</span>
+      <span class="flex-1 group-hover:text-[#D97757]">多轮客服场景下的指令泄露复现实验</span>
+      <span class="text-[10px] font-mono px-2 py-1 rounded" style="background:rgba(52,211,153,0.15);color:#6EE7B7;">Instruction</span>
+      <span class="text-faint group-hover:text-[#D97757]">↗</span>
+    </a>
+    <div class="group flex items-center gap-6 px-6 py-5 bg-[#0E0E0C] draft-row">
+      <span class="font-mono text-xs text-faint w-12">BC#002</span>
+      <span class="font-mono text-xs text-faint w-24 hidden md:inline">COMING</span>
+      <span class="flex-1 draft-title">软包装拒绝是不是另一种 Bad Case?</span>
+      <span class="draft-badge">即将发布</span>
+      <span class="text-faint draft-arrow">↗</span>
+    </div>
+    <div class="group flex items-center gap-6 px-6 py-5 bg-[#0E0E0C] draft-row">
+      <span class="font-mono text-xs text-faint w-12">BC#003</span>
+      <span class="font-mono text-xs text-faint w-24 hidden md:inline">COMING</span>
+      <span class="flex-1 draft-title">当模型用"编故事"绕开身份保密规则</span>
+      <span class="draft-badge">即将发布</span>
+      <span class="text-faint draft-arrow">↗</span>
+    </div>
+    <div class="group flex items-center gap-6 px-6 py-5 bg-[#0E0E0C] draft-row">
+      <span class="font-mono text-xs text-faint w-12">BC#004</span>
+      <span class="font-mono text-xs text-faint w-24 hidden md:inline">COMING</span>
+      <span class="flex-1 draft-title">虚构品牌测试中的产品线幻觉</span>
+      <span class="draft-badge">即将发布</span>
+      <span class="text-faint draft-arrow">↗</span>
+    </div>
+    <div class="group flex items-center gap-6 px-6 py-5 bg-[#0E0E0C] draft-row">
+      <span class="font-mono text-xs text-faint w-12">BC#005</span>
+      <span class="font-mono text-xs text-faint w-24 hidden md:inline">COMING</span>
+      <span class="flex-1 draft-title">L0 ≠ 安全:重新定义"守规"的 6 级标注量表</span>
+      <span class="draft-badge">即将发布</span>
+      <span class="text-faint draft-arrow">↗</span>
+    </div>
+  </div>
+  <div class="mt-8 text-sm text-mute font-mono">→ 1 已发布 · 4 起草中 · 持续更新</div>
+</section>
+
+<section id="tooling" class="max-w-6xl mx-auto px-6 py-32 border-t border-faint section-reveal">
+  <div class="flex items-center gap-4 mb-8 font-mono text-xs">
+    <span style="color:#D97757;">04</span>
+    <span class="w-8 h-px" style="background:rgba(217,119,87,0.4);"></span>
+    <span class="text-soft uppercase tracking-widest">Tooling</span>
+  </div>
+  <p class="mb-4 max-w-xl" style="color:rgba(232,230,224,0.5);">不是"我用 AI 做了什么漂亮东西",</p>
+  <p class="mb-16 max-w-xl">而是<span style="color:#D97757;">我用 AI 工具,把哪些复杂工作流跑通了。</span></p>
+
+  <div class="grid md:grid-cols-2 gap-px bg-[#E8E6E0]/5">
+
+    <div class="bg-[#0E0E0C] p-8 bg-card-hover">
+      <div class="flex items-start justify-between mb-6">
+        <span class="font-mono text-[10px] uppercase tracking-wider" style="color:#D97757;">PIPELINE</span>
+        <div class="text-right">
+          <div class="text-3xl font-light" style="color:#D97757;">380+</div>
+          <div class="text-[10px] font-mono text-mute uppercase tracking-wider">样本归因</div>
+        </div>
+      </div>
+      <h4 class="text-lg font-medium mb-2">Bad Case 全自动归因 Pipeline</h4>
+      <div class="font-mono text-xs text-mute mb-4">Claude API · Python · Notion</div>
+      <p class="text-sm text-soft leading-relaxed">每天遇到 10+ Bad Case。脚本自动调用 Claude → 按 5 类归因打标签 → 写入 Notion。3 个月跑了 380+ 样本。</p>
+    </div>
+
+    <div class="bg-[#0E0E0C] p-8 bg-card-hover">
+      <div class="flex items-start justify-between mb-6">
+        <span class="font-mono text-[10px] uppercase tracking-wider" style="color:#D97757;">FRAMEWORK</span>
+        <div class="text-right">
+          <div class="text-3xl font-light" style="color:#D97757;">3000</div>
+          <div class="text-[10px] font-mono text-mute uppercase tracking-wider">次自动调用</div>
+        </div>
+      </div>
+      <h4 class="text-lg font-medium mb-2">Prompt 实验自动化框架</h4>
+      <div class="font-mono text-xs text-mute mb-4">LiteLLM · Python · DuckDB</div>
+      <p class="text-sm text-soft leading-relaxed">6 版 Prompt × 5 模型 × 100 样本 = 3000 次 API 调用。手动跑要一周,脚本一晚跑完。</p>
+    </div>
+
+    <div class="bg-[#0E0E0C] p-8 bg-card-hover">
+      <div class="flex items-start justify-between mb-6">
+        <span class="font-mono text-[10px] uppercase tracking-wider" style="color:#D97757;">VISUAL</span>
+        <div class="text-right">
+          <div class="text-3xl font-light" style="color:#D97757;">11</div>
+          <div class="text-[10px] font-mono text-mute uppercase tracking-wider">稳定 Prompt 版本</div>
+        </div>
+      </div>
+      <h4 class="text-lg font-medium mb-2">视觉 / 视频实验</h4>
+      <div class="font-mono text-xs text-mute mb-4">Midjourney · Runway · Flux</div>
+      <p class="text-sm text-soft leading-relaxed">网站的视觉素材都是自己做。重点不是"作品",是 Prompt 调多少版才能稳定输出商业可用素材。</p>
+    </div>
+
+    <div class="bg-[#0E0E0C] p-8 bg-card-hover">
+      <div class="flex items-start justify-between mb-6">
+        <span class="font-mono text-[10px] uppercase tracking-wider" style="color:#D97757;">AGENT</span>
+        <div class="text-right">
+          <div class="text-3xl font-light" style="color:#D97757;">24/7</div>
+          <div class="text-[10px] font-mono text-mute uppercase tracking-wider">每日学习追踪</div>
+        </div>
+      </div>
+      <h4 class="text-lg font-medium mb-2">Daily Learning Agent</h4>
+      <div class="font-mono text-xs text-mute mb-4">Claude · Coze · 飞书多维表格</div>
+      <p class="text-sm text-soft leading-relaxed">每天读 Paper / 写 Bad Case 后,Agent 自动总结当天进度并推送日报。逼自己保持节奏。</p>
+    </div>
+
+    <div class="bg-[#0E0E0C] p-8 bg-card-hover md:col-span-2 border-t border-[#D97757]/20">
+      <div class="flex items-start justify-between mb-6">
+        <div>
+          <span class="font-mono text-[10px] uppercase tracking-wider" style="color:#D97757;">META · YOU ARE HERE</span>
+          <div class="font-mono text-[10px] text-mute mt-1">{ tooling: 5 / 5 }</div>
+        </div>
+        <div class="text-right">
+          <div class="text-3xl font-light" style="color:#D97757;">100%</div>
+          <div class="text-[10px] font-mono text-mute uppercase tracking-wider">AI 协同产出</div>
+        </div>
+      </div>
+      <h4 class="text-xl font-medium mb-2">这个网站本身</h4>
+      <div class="font-mono text-xs text-mute mb-4">Claude (策划/文案) · Cursor (代码) · GSAP (动画) · Lenis (滚动) · Pixverse (视觉)</div>
+      <p class="text-sm text-soft leading-relaxed mb-4">
+        从架构到文案、从代码到动画,我没有写过一行原生 JavaScript——所有动效逻辑由 Claude 协同完成,Cursor 中迭代调试。
+        这是我目前最完整的"AI 协同工程"实证。
+      </p>
+      <p class="text-sm leading-relaxed" style="color:rgba(232,230,224,0.85);">
+        如果你正在评估候选人的「用 AI 工具放大产出」能力——
+        <span style="color:#D97757;">这个页面就是答案。</span>
+      </p>
+      <div class="mt-6 flex flex-wrap gap-4 text-sm">
+        <a href="https://github.com/LiTianHao" class="group flex items-center gap-1 text-soft hover:text-[#D97757]">查看完整源码 <span class="arrow-shift">↗</span></a>
+        <a href="#" class="group flex items-center gap-1 text-soft hover:text-[#D97757]">开发对话日志 <span class="arrow-shift">↗</span></a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="max-w-6xl mx-auto px-6 py-32 border-t border-faint section-reveal">
+  <div class="flex items-center gap-4 mb-8 font-mono text-xs">
+    <span style="color:#D97757;">05</span>
+    <span class="w-8 h-px" style="background:rgba(217,119,87,0.4);"></span>
+    <span class="text-soft uppercase tracking-widest">Manifesto</span>
+  </div>
+  <h3 class="text-2xl md:text-3xl font-light mb-4 max-w-2xl">
+    What I believe about <span style="color:#D97757;">training AI</span>.
+  </h3>
+  <p class="mb-16 max-w-xl text-sm" style="color:rgba(232,230,224,0.5);">这不是宣言,是我目前的认知。一定会变,但写下来就是承诺。</p>
+
+  <div class="space-y-12 max-w-3xl">
+    <div class="grid grid-cols-12 gap-4 group">
+      <div class="col-span-1 font-mono text-xs pt-2" style="color:rgba(217,119,87,0.6);">01</div>
+      <div class="col-span-11">
+        <p class="text-xl font-light mb-3 group-hover:text-[#D97757]">训练 AI 的本质,是把人类判断显式化。</p>
+        <p class="text-soft leading-relaxed">一个标注员说"这个回答不好",这不是评分,是直觉。把直觉拆成 5 个可勾选维度——这才是工程。</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-12 gap-4 group">
+      <div class="col-span-1 font-mono text-xs pt-2" style="color:rgba(217,119,87,0.6);">02</div>
+      <div class="col-span-11">
+        <p class="text-xl font-light mb-3 group-hover:text-[#D97757]">Bad Case 比 Good Case 信息量大 100 倍。</p>
+        <p class="text-soft leading-relaxed">一千个正确告诉你"模型能做这个任务",一个错误告诉你"模型在这一步崩了"——后者才是改进的入口。</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-12 gap-4 group">
+      <div class="col-span-1 font-mono text-xs pt-2" style="color:rgba(217,119,87,0.6);">03</div>
+      <div class="col-span-11">
+        <p class="text-xl font-light mb-3 group-hover:text-[#D97757]">评估比 Prompt 更难,也更重要。</p>
+        <p class="text-soft leading-relaxed">行业里大多数人在比谁的 Prompt 巧,但真正稳住产品质量的,是评估集的覆盖度与一致性。</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-12 gap-4 group">
+      <div class="col-span-1 font-mono text-xs pt-2" style="color:rgba(217,119,87,0.6);">04</div>
+      <div class="col-span-11">
+        <p class="text-xl font-light mb-3 group-hover:text-[#D97757]">标注员不是廉价劳动力,是产品质量的最后一道闸。</p>
+        <p class="text-soft leading-relaxed">一份好的标注规范,能让 100 个标注员产出和 5 个专家一致的结果——这是流程工程,不是体力活。</p>
+      </div>
+    </div>
+    <div class="grid grid-cols-12 gap-4 group">
+      <div class="col-span-1 font-mono text-xs pt-2" style="color:rgba(217,119,87,0.6);">05</div>
+      <div class="col-span-11">
+        <p class="text-xl font-light mb-3 group-hover:text-[#D97757]">AI 训练师 ≠ Prompt 工程师。</p>
+        <p class="text-soft leading-relaxed">Prompt 工程师在用模型,AI 训练师在改造模型。前者优化输入,后者重塑分布。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="max-w-6xl mx-auto px-6 py-32 border-t border-faint section-reveal">
+  <div class="flex items-center gap-4 mb-8 font-mono text-xs">
+    <span style="color:#D97757;">06</span>
+    <span class="w-8 h-px" style="background:rgba(217,119,87,0.4);"></span>
+    <span class="text-soft uppercase tracking-widest">Contact</span>
+  </div>
+  <div class="grid md:grid-cols-12 gap-8">
+    <div class="md:col-span-7">
+      <h3 class="text-3xl md:text-4xl font-light leading-tight mb-6">
+        如果你正在招 <span style="color:#D97757;">AI 训练师 / 数据评估 / 标注规范设计</span> —— 我希望聊一聊。
+      </h3>
+      <p class="mb-12 max-w-md" style="color:rgba(232,230,224,0.5);">
+        杭州 · 可远程 · 面试可随时安排。我不擅长包装,但我擅长交付。
+      </p>
+    </div>
+    <div class="md:col-span-5">
+      <div class="space-y-px bg-[#E8E6E0]/5">
+        <a href="mailto:ltianhao310@gmail.com" class="flex items-center gap-4 px-5 py-4 bg-[#0E0E0C] bg-card-hover group">
+          <span class="text-mute">✉</span>
+          <span class="text-xs font-mono text-mute uppercase tracking-wider w-20">Email</span>
+          <span class="flex-1 text-sm group-hover:text-[#D97757]" style="color:rgba(232,230,224,0.85);">ltianhao310@gmail.com</span>
+          <span class="text-faint group-hover:text-[#D97757]">↗</span>
+        </a>
+        <a href="https://github.com/LiTianHao" target="_blank" class="flex items-center gap-4 px-5 py-4 bg-[#0E0E0C] bg-card-hover group">
+          <span class="text-mute">⌥</span>
+          <span class="text-xs font-mono text-mute uppercase tracking-wider w-20">GitHub</span>
+          <span class="flex-1 text-sm group-hover:text-[#D97757]" style="color:rgba(232,230,224,0.85);">github.com/LiTianHao</span>
+          <span class="text-faint group-hover:text-[#D97757]">↗</span>
+        </a>
+        <a href="#" class="flex items-center gap-4 px-5 py-4 bg-[#0E0E0C] bg-card-hover group">
+          <span class="text-mute">in</span>
+          <span class="text-xs font-mono text-mute uppercase tracking-wider w-20">LinkedIn</span>
+          <span class="flex-1 text-sm group-hover:text-[#D97757]" style="color:rgba(232,230,224,0.85);">即将开通</span>
+          <span class="text-faint group-hover:text-[#D97757]">↗</span>
+        </a>
+        <a href="#" class="flex items-center gap-4 px-5 py-4 bg-[#0E0E0C] bg-card-hover group">
+          <span style="color:#D97757;">▤</span>
+          <span class="text-xs font-mono text-mute uppercase tracking-wider w-20">Resume</span>
+          <span class="flex-1 text-sm group-hover:text-[#D97757]" style="color:#D97757;">下载 PDF</span>
+          <span class="text-faint group-hover:text-[#D97757]">↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="max-w-6xl mx-auto px-6 py-12 border-t border-faint">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs font-mono text-faint">
+    <div>© 2026 LiTianHao. Build in public.</div>
+    <div class="flex items-center gap-6 flex-wrap">
+      <span>Last updated: just now</span>
+      <a href="https://github.com/LiTianHao" class="hover:text-[#D97757]">Source on GitHub ↗</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* === 1. Lenis 平滑滚动 === */
+const lenis = new Lenis({
+  duration: 1.2,
+  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+  smooth: true,
+  smoothTouch: false
+});
+function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+requestAnimationFrame(raf);
+
+gsap.registerPlugin(ScrollTrigger);
+lenis.on('scroll', ScrollTrigger.update);
+
+const modeToggle = document.getElementById('mode-toggle');
+const heroAmbient = document.getElementById('hero-ambient');
+let pageMode = localStorage.getItem('page-mode') || 'current';
+let revealTriggers = [];
+function clearRevealStyles() {
+  document.querySelectorAll('.section-reveal').forEach((el) => {
+    el.style.opacity = '';
+    el.style.transform = '';
+  });
+}
+function setupEnhancedReveal() {
+  revealTriggers.forEach((t) => t.kill());
+  revealTriggers = [];
+  document.querySelectorAll('.section-reveal').forEach((section) => {
+    gsap.set(section, { opacity: 0, y: 26 });
+    const tween = gsap.to(section, {
+      opacity: 1,
+      y: 0,
+      duration: 1.0,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: section,
+        start: 'top 82%',
+        once: true
+      }
+    });
+    if (tween.scrollTrigger) revealTriggers.push(tween.scrollTrigger);
+  });
+}
+function applyPageMode(mode) {
+  pageMode = mode;
+  document.body.dataset.pageMode = mode;
+  if (modeToggle) modeToggle.textContent = `Mode: ${mode === 'enhanced' ? 'Enhanced' : 'Current'}`;
+  localStorage.setItem('page-mode', mode);
+  if (mode === 'enhanced') {
+    setupEnhancedReveal();
+  } else {
+    revealTriggers.forEach((t) => t.kill());
+    revealTriggers = [];
+    clearRevealStyles();
+  }
+  ScrollTrigger.refresh();
+}
+if (modeToggle) {
+  modeToggle.addEventListener('click', () => {
+    applyPageMode(pageMode === 'current' ? 'enhanced' : 'current');
+    runGlitch(pageMode === 'enhanced');
+  });
+}
+applyPageMode(pageMode);
+
+/* === 2. Hero 进场动画(Timeline) === */
+const heroTimeline = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+// Step 1: 三行主标题逐行揭幕
+heroTimeline.to('.hero-mask-line .line-content', {
+  y: '0%',
+  duration: 0.9,
+  stagger: 0.15
+}, 0.3);
+
+// Step 2: 副标 + 数据卡 + meta 淡入
+heroTimeline.to('.hero-fade', {
+  opacity: 1,
+  y: 0,
+  duration: 0.8,
+  stagger: 0.12
+}, 1.2);
+
+// Step 3: 数据卡数字 0→target 滚动
+heroTimeline.to('.counter', {
+  innerText: (i, el) => el.dataset.target,
+  duration: 1.2,
+  ease: 'power2.out',
+  snap: { innerText: 1 }
+}, 1.6);
+
+// Step 4: 几何眼睛延迟出现
+heroTimeline.to('.hero-eye', {
+  opacity: 1,
+  duration: 1.0
+}, 2.2);
+
+/* === 3. Glitch 关键词("AI 训练师") === */
+function runGlitch(isEnhanced = false) {
+  const targets = document.querySelectorAll('.glitch-target');
+  const glitchChars = isEnhanced ? '▓▒░█▄▀■□◆◇●○※01<>[]{}' : '▓▒░█▄▀■□◆◇●○※';
+  targets.forEach((el) => {
+    const finalText = el.dataset.glitchText;
+    const len = finalText.length;
+    let frame = 0;
+    const totalFrames = isEnhanced ? 26 : 20;
+    if (isEnhanced) {
+      el.textContent = finalText.split('').map((c) => (c === ' ' ? ' ' : glitchChars[Math.floor(Math.random() * glitchChars.length)])).join('');
+    } else {
+      el.textContent = finalText;
+    }
+    const glitchInterval = setInterval(() => {
+      let display = '';
+      for (let i = 0; i < len; i++) {
+        const char = finalText[i];
+        const focusFrame = Math.floor((i / len) * totalFrames);
+        const settleOffset = isEnhanced ? 2 : 4;
+        if (frame >= focusFrame + settleOffset) {
+          display += char;
+        } else if (char === ' ') {
+          display += ' ';
+        } else {
+          display += glitchChars[Math.floor(Math.random() * glitchChars.length)];
+        }
+      }
+      el.textContent = display;
+      frame++;
+      if (frame > totalFrames + (isEnhanced ? 8 : 6)) {
+        clearInterval(glitchInterval);
+        el.textContent = finalText;
+      }
+    }, isEnhanced ? 45 : 50);
+  });
+}
+gsap.delayedCall(pageMode === 'enhanced' ? 0.15 : 1.6, () => runGlitch(pageMode === 'enhanced'));
+
+/* === 4. 实时时钟 === */
+function tick() {
+  const d = new Date();
+  const h = String(d.getHours()).padStart(2, '0');
+  const m = String(d.getMinutes()).padStart(2, '0');
+  const s = String(d.getSeconds()).padStart(2, '0');
+  const clockEl = document.getElementById('clock');
+  if (clockEl) clockEl.textContent = h + ':' + m + ':' + s;
+}
+tick();
+setInterval(tick, 1000);
+
+/* === 5. 几何眼睛刻度 + 鼠标跟随 === */
+const ticksGroup = document.getElementById('ticks');
+for (let i = 0; i < 12; i++) {
+  const angle = (i * 30 * Math.PI) / 180;
+  const x1 = 200 + Math.cos(angle) * 138;
+  const y1 = 200 + Math.sin(angle) * 138;
+  const x2 = 200 + Math.cos(angle) * 144;
+  const y2 = 200 + Math.sin(angle) * 144;
+  const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+  line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+  line.setAttribute('stroke', '#E8E6E0'); line.setAttribute('stroke-width', '1');
+  line.setAttribute('opacity', i % 3 === 0 ? '0.6' : '0.25');
+  ticksGroup.appendChild(line);
+}
+
+const ringMid = document.getElementById('ring-mid');
+const ringInner = document.getElementById('ring-inner');
+const pupil = document.getElementById('pupil');
+const coordText = document.getElementById('coord-text');
+const heroSection = document.getElementById('hero');
+const eyeTarget = { x: 0, y: 0 };
+const eyeCurrent = { x: 0, y: 0 };
+const saccade = { x: 0, y: 0 };
+let phase = 0;
+let lastMoveAt = Date.now();
+
+window.addEventListener('mousemove', (e) => {
+  const rect = heroSection.getBoundingClientRect();
+  const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+  const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+  eyeTarget.x = Math.max(-1, Math.min(1, nx));
+  eyeTarget.y = Math.max(-1, Math.min(1, ny));
+  lastMoveAt = Date.now();
+});
+
+// 偶发扫视，让机械眼更有“灵动感”
+setInterval(() => {
+  const idle = Date.now() - lastMoveAt > 900;
+  if (idle || Math.random() < 0.35) {
+    saccade.x = (Math.random() - 0.5) * 0.22;
+    saccade.y = (Math.random() - 0.5) * 0.18;
+    setTimeout(() => { saccade.x = 0; saccade.y = 0; }, 110);
+  }
+}, 1200);
+
+function animateEye() {
+  phase += 0.028;
+  const lively = true;
+  const idle = Date.now() - lastMoveAt > 600;
+  const microX = lively ? (idle ? Math.sin(phase) * 0.07 : Math.sin(phase * 2.1) * 0.02) : 0;
+  const microY = lively ? (idle ? Math.cos(phase * 1.25) * 0.06 : Math.cos(phase * 1.9) * 0.018) : 0;
+  const sx = lively ? saccade.x : 0;
+  const sy = lively ? saccade.y : 0;
+  const tx = eyeTarget.x + microX + sx;
+  const ty = eyeTarget.y + microY + sy;
+
+  const smooth = lively ? 0.22 : 0.16;
+  eyeCurrent.x += (tx - eyeCurrent.x) * smooth;
+  eyeCurrent.y += (ty - eyeCurrent.y) * smooth;
+
+  const ox = eyeCurrent.x * (lively ? 14.5 : 12.5);
+  const oy = eyeCurrent.y * (lively ? 14.5 : 12.5);
+  const px = eyeCurrent.x * (lively ? 19 : 16);
+  const py = eyeCurrent.y * (lively ? 19 : 16);
+
+  ringMid.style.transform = lively
+    ? `translate(${ox * 0.4}px, ${oy * 0.4}px) rotate(${eyeCurrent.x * 0.8}deg)`
+    : `translate(${ox * 0.35}px, ${oy * 0.35}px)`;
+  ringInner.style.transform = lively
+    ? `translate(${ox * 0.8}px, ${oy * 0.8}px) rotate(${eyeCurrent.y * -1.1}deg)`
+    : `translate(${ox * 0.68}px, ${oy * 0.68}px)`;
+  pupil.style.transform = lively
+    ? `translate(${px}px, ${py}px) scale(${1 + Math.sin(phase * 1.6) * 0.015})`
+    : `translate(${px}px, ${py}px)`;
+  coordText.textContent = `x=${((eyeCurrent.x + 1) / 2).toFixed(2)} · y=${((eyeCurrent.y + 1) / 2).toFixed(2)}`;
+
+  requestAnimationFrame(animateEye);
+}
+
+requestAnimationFrame(animateEye);
+
+window.addEventListener('pointermove', (e) => {
+  if (!heroAmbient || pageMode !== 'enhanced') return;
+  const nx = (e.clientX / window.innerWidth - 0.5) * 2;
+  const ny = (e.clientY / window.innerHeight - 0.5) * 2;
+  heroAmbient.style.transform = `translate(${nx * 8}px, ${ny * 8}px)`;
+});
+</script>
+
+</body>
+</html>
