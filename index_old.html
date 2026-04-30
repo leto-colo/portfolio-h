@@ -100,7 +100,8 @@
     height: 460px;
     border-radius: 9999px;
     filter: blur(56px);
-    opacity: 0.12;
+    opacity: 0;
+    transition: opacity 1s ease;
     mix-blend-mode: screen;
     animation: drift 14s ease-in-out infinite;
   }
@@ -623,6 +624,7 @@ function applyPageMode(mode) {
   localStorage.setItem('page-mode', mode);
   if (mode === 'enhanced') {
     setupEnhancedReveal();
+    document.querySelectorAll('.hero-blob').forEach(b => b.style.opacity = '0.12');
   } else {
     revealTriggers.forEach((t) => t.kill());
     revealTriggers = [];
