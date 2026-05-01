@@ -743,18 +743,20 @@ setInterval(tick, 1000);
 
 /* === 5. 几何眼睛刻度 + 鼠标跟随 === */
 const ticksGroup = document.getElementById('ticks');
-for (let i = 0; i < 12; i++) {
-  const angle = (i * 30 * Math.PI) / 180;
-  const x1 = 200 + Math.cos(angle) * 138;
-  const y1 = 200 + Math.sin(angle) * 138;
-  const x2 = 200 + Math.cos(angle) * 144;
-  const y2 = 200 + Math.sin(angle) * 144;
-  const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-  line.setAttribute('x1', x1); line.setAttribute('y1', y1);
-  line.setAttribute('x2', x2); line.setAttribute('y2', y2);
-  line.setAttribute('stroke', '#E8E6E0'); line.setAttribute('stroke-width', '1');
-  line.setAttribute('opacity', i % 3 === 0 ? '0.6' : '0.25');
-  ticksGroup.appendChild(line);
+if (ticksGroup) {
+  for (let i = 0; i < 12; i++) {
+    const angle = (i * 30 * Math.PI) / 180;
+    const x1 = 200 + Math.cos(angle) * 138;
+    const y1 = 200 + Math.sin(angle) * 138;
+    const x2 = 200 + Math.cos(angle) * 144;
+    const y2 = 200 + Math.sin(angle) * 144;
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+    line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+    line.setAttribute('stroke', '#E8E6E0'); line.setAttribute('stroke-width', '1');
+    line.setAttribute('opacity', i % 3 === 0 ? '0.6' : '0.25');
+    ticksGroup.appendChild(line);
+  }
 }
 
 const ringMid = document.getElementById('ring-mid');
@@ -762,22 +764,25 @@ const ringInner = document.getElementById('ring-inner');
 const pupil = document.getElementById('pupil');
 const coordText = document.getElementById('coord-text');
 const heroSection = document.getElementById('hero');
+const hasEye = ringMid && ringInner && pupil && coordText && heroSection;
 const eyeTarget = { x: 0, y: 0 };
 const eyeCurrent = { x: 0, y: 0 };
 const saccade = { x: 0, y: 0 };
 let phase = 0;
 let lastMoveAt = Date.now();
 
-window.addEventListener('mousemove', (e) => {
-  const rect = heroSection.getBoundingClientRect();
-  const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-  const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
-  eyeTarget.x = Math.max(-1, Math.min(1, nx));
-  eyeTarget.y = Math.max(-1, Math.min(1, ny));
-  lastMoveAt = Date.now();
-});
+if (hasEye) {
+  window.addEventListener('mousemove', (e) => {
+    const rect = heroSection.getBoundingClientRect();
+    const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    const ny = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+    eyeTarget.x = Math.max(-1, Math.min(1, nx));
+    eyeTarget.y = Math.max(-1, Math.min(1, ny));
+    lastMoveAt = Date.now();
+  });
+}
 
-// 偶发扫视，让机械眼更有“灵动感”
+// 偶发扫视，让机械眼更有”灵动感”
 setInterval(() => {
   const idle = Date.now() - lastMoveAt > 900;
   if (idle || Math.random() < 0.35) {
@@ -788,6 +793,7 @@ setInterval(() => {
 }, 1200);
 
 function animateEye() {
+  if (!hasEye) return;
   phase += 0.028;
   const lively = true;
   const idle = Date.now() - lastMoveAt > 600;
