@@ -382,6 +382,12 @@ const ARTICLE_META = {
     tag: 'Safety',
     models: 'Qwen-Plus · DeepSeek-Chat',
   },
+  'BC003': {
+    title: 'BC#003 · 当模型用"编故事"绕开身份保密规则',
+    date: '2026-05-01',
+    tag: 'Identity',
+    models: 'Qwen-Plus · Doubao-Pro',
+  },
 };
 
 const meta = ARTICLE_META[slug];
@@ -389,6 +395,7 @@ const metaBar = document.getElementById('meta-bar');
 const tagColors = {
   'Instruction': 'background:rgba(217,119,87,0.12);color:#D97757;',
   'Safety':      'background:rgba(139,165,255,0.12);color:#8BA5FF;',
+  'Identity':    'background:rgba(52,211,153,0.12);color:#6EE7B7;',
 };
 
 if (meta) {
