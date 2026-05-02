@@ -388,6 +388,12 @@ const ARTICLE_META = {
     tag: 'Identity',
     models: 'Qwen-Plus · Doubao-Pro',
   },
+  'BC004': {
+    title: 'BC#004 · 虚构品牌测试中的产品线幻觉',
+    date: '2026-05-02',
+    tag: 'Hallucination',
+    models: 'Qwen-Plus · Doubao-Pro',
+  },
 };
 
 const meta = ARTICLE_META[slug];
@@ -396,6 +402,7 @@ const tagColors = {
   'Instruction': 'background:rgba(217,119,87,0.12);color:#D97757;',
   'Safety':      'background:rgba(139,165,255,0.12);color:#8BA5FF;',
   'Identity':    'background:rgba(52,211,153,0.12);color:#6EE7B7;',
+  'Hallucination': 'background:rgba(217,119,87,0.12);color:#D97757;',
 };
 
 if (meta) {
