@@ -164,17 +164,65 @@
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-  @keyframes autoScroll {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
+  /* ===== Work C: JS 视差滚动卡片 ===== */
+  .scroll-stage {
+    overflow: hidden;
+    position: relative;
   }
-  .scroll-track {
+  .scroll-track-js {
     display: flex;
     gap: 0.75rem;
     width: max-content;
-    animation: autoScroll 30s linear infinite;
+    will-change: transform;
   }
-  .scroll-track:hover { animation-play-state: paused; }
+  .scroll-card {
+    flex-shrink: 0;
+    width: 13rem;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1),
+                box-shadow 0.4s cubic-bezier(0.25, 0.1, 0.25, 1),
+                border-color 0.4s ease;
+    user-select: none;
+  }
+  /* ── Glare Hover ── */
+  .scroll-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(
+      135deg,
+      transparent 40%,
+      rgba(255, 255, 255, 0.06) 50%,
+      transparent 60%
+    );
+    background-size: 250% 250%;
+    background-position: -100% -100%;
+    transition: background-position 0.6s ease;
+  }
+  .scroll-card:hover::before {
+    background-position: 100% 100%;
+  }
+  /* ── 选中态 ── */
+  .scroll-card.selected {
+    border-color: rgba(217, 119, 87, 0.6) !important;
+    box-shadow: 0 0 24px rgba(217, 119, 87, 0.15), 0 0 64px rgba(217, 119, 87, 0.06);
+    transform: scale(1.08);
+    opacity: 1 !important;
+    z-index: 3;
+  }
+  .scroll-card.selected::before {
+    background: linear-gradient(
+      135deg,
+      transparent 30%,
+      rgba(217, 119, 87, 0.12) 50%,
+      transparent 70%
+    );
+    background-size: 250% 250%;
+    background-position: 100% 100%;
+  }
 </style>
 </head>
 <body>
@@ -376,17 +424,17 @@
       </p>
 
       <!-- 横向自动滚动卡片区 -->
-      <div class="relative mb-8 overflow-hidden">
+      <div class="scroll-stage relative mb-8" id="scrollStage">
         <!-- 左右渐隐遮罩 -->
         <div class="absolute left-0 top-0 bottom-0 w-8 pointer-events-none z-10"
              style="background:linear-gradient(to left, transparent, #0E0E0C);"></div>
         <div class="absolute right-0 top-0 bottom-0 w-12 pointer-events-none z-10"
              style="background:linear-gradient(to right, transparent, #0E0E0C);"></div>
 
-        <div class="scroll-track">
+        <div class="scroll-track-js" id="scrollTrack">
 
           <!-- S1 单轮问答 -->
-          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 hover:border-[#D97757]/40 transition-colors duration-300"
+          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
                style="background:rgba(232,230,224,0.02);">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">单轮问答</div>
             <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
@@ -400,7 +448,7 @@
           </div>
 
           <!-- S2 多轮对话 -->
-          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 hover:border-[#D97757]/40 transition-colors duration-300"
+          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
                style="background:rgba(232,230,224,0.02);">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">多轮对话</div>
             <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
@@ -413,7 +461,7 @@
           </div>
 
           <!-- S3 Reward -->
-          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 hover:border-[#D97757]/40 transition-colors duration-300"
+          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
                style="background:rgba(232,230,224,0.02);">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">Reward Model</div>
             <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
@@ -426,7 +474,7 @@
           </div>
 
           <!-- S4 CoT -->
-          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 hover:border-[#D97757]/40 transition-colors duration-300"
+          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
                style="background:rgba(232,230,224,0.02);">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">CoT 思维链</div>
             <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
@@ -439,7 +487,7 @@
           </div>
 
           <!-- S5 RAG -->
-          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 hover:border-[#D97757]/40 transition-colors duration-300"
+          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
                style="background:rgba(232,230,224,0.02);">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">RAG</div>
             <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
@@ -452,7 +500,7 @@
           </div>
 
           <!-- S6 Agent -->
-          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 hover:border-[#D97757]/40 transition-colors duration-300"
+          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
                style="background:rgba(232,230,224,0.02);">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">Agent</div>
             <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
@@ -465,7 +513,7 @@
           </div>
 
           <!-- S7 专项（小爱同学） -->
-          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 hover:border-[#D97757]/40 transition-colors duration-300"
+          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
                style="background:rgba(232,230,224,0.02);">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">专项 · 语音助手</div>
             <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
@@ -477,100 +525,6 @@
             </p>
           </div>
 
-          <!-- === 复制区（无缝循环用）=== -->
-          <!-- S1 单轮问答 -->
-          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 transition-colors duration-300"
-               style="background:rgba(232,230,224,0.02);" aria-hidden="true">
-            <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">单轮问答</div>
-            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
-              P0 内容准确 · 指令遵从<br>
-              P1 内容完整<br>
-              P2 表达质量
-            </div>
-            <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
-              单轮场景核心是「听懂 query」，指令遵从优先级与内容准确并列 P0。
-            </p>
-          </div>
-
-          <!-- S2 多轮对话 -->
-          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 transition-colors duration-300"
-               style="background:rgba(232,230,224,0.02);" aria-hidden="true">
-            <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">多轮对话</div>
-            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
-              P0 上下文一致 · 指代理解<br>
-              P1 回答质量
-            </div>
-            <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
-              指代不明是多轮场景最高频失守点，须在全局视角和单条 response 两个层次同时核查。
-            </p>
-          </div>
-
-          <!-- S3 Reward -->
-          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 transition-colors duration-300"
-               style="background:rgba(232,230,224,0.02);" aria-hidden="true">
-            <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">Reward Model</div>
-            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
-              P0 内容准确 · 内容完整<br>
-              P1 指令遵从 · 表达质量
-            </div>
-            <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
-              无效回答不能排末位——它会作为负样本污染偏好信号，须直接剔除不参与排序。
-            </p>
-          </div>
-
-          <!-- S4 CoT -->
-          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 transition-colors duration-300"
-               style="background:rgba(232,230,224,0.02);" aria-hidden="true">
-            <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">CoT 思维链</div>
-            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
-              think P0 推理有效 · 推理覆盖<br>
-              response P0 内容完整 · 指令
-            </div>
-            <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
-              think 与 response 捆绑进入 SFT，response 不达标则整条数据无效，两者须同等把关。
-            </p>
-          </div>
-
-          <!-- S5 RAG -->
-          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 transition-colors duration-300"
-               style="background:rgba(232,230,224,0.02);" aria-hidden="true">
-            <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">RAG</div>
-            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
-              有效性 材料可用 · prompt 可用<br>
-              P0 忠实材料 · 内容完整
-            </div>
-            <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
-              材料可用性前置于内容质量，材料不可用则后续标注全部失效。
-            </p>
-          </div>
-
-          <!-- S6 Agent -->
-          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 transition-colors duration-300"
-               style="background:rgba(232,230,224,0.02);" aria-hidden="true">
-            <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">Agent</div>
-            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
-              P0 工具调用准确 · 任务完成<br>
-              P1 内容准确 · 上下文一致
-            </div>
-            <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
-              核心反模式：以对话拖延代替工具调用。融合 CoT、多轮、单轮三类场景规则。
-            </p>
-          </div>
-
-          <!-- S7 专项（小爱同学） -->
-          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 transition-colors duration-300"
-               style="background:rgba(232,230,224,0.02);" aria-hidden="true">
-            <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">专项 · 语音助手</div>
-            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
-              P0 人设一致 · 信息准确<br>
-              P1 语言自然度 · 任务完成
-            </div>
-            <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
-              语音场景下模板语危害高于通用场景——「一直都在哦」比事实错误更影响训练质量。
-            </p>
-          </div>
-
-        </div>
       </div>
 
       <!-- 统计数字 -->
@@ -1074,6 +1028,98 @@ window.addEventListener('pointermove', (e) => {
   const ny = (e.clientY / window.innerHeight - 0.5) * 2;
   heroAmbient.style.transform = `translate(${nx * 8}px, ${ny * 8}px)`;
 });
+</script>
+
+
+<!-- Work C: 视差滚动 + Glare Hover + 点击选中 -->
+<script>
+(function() {
+  const stage = document.getElementById('scrollStage');
+  const track = document.getElementById('scrollTrack');
+  if (!stage || !track) return;
+
+  const cards = track.querySelectorAll('.scroll-card');
+  const cardCount = cards.length;
+  if (cardCount === 0) return;
+
+  let scrollPos = 0;
+  const speed = 0.4;
+  let selected = null;
+  let hovered = false;
+  let rafId = null;
+
+  // Clone cards for seamless JS-driven looping
+  const fragment = document.createDocumentFragment();
+  cards.forEach(c => {
+    const clone = c.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    clone.classList.remove('selected');
+    fragment.appendChild(clone);
+  });
+  track.appendChild(fragment);
+
+  function getCardWidth() {
+    const first = cards[0];
+    return first ? first.offsetWidth + 12 : 220;
+  }
+
+  function updateParallax() {
+    const stageRect = stage.getBoundingClientRect();
+    const centerX = stageRect.left + stageRect.width / 2;
+    const maxDist = stageRect.width / 2;
+
+    const allCards = track.querySelectorAll('.scroll-card');
+    allCards.forEach(card => {
+      if (card === selected) return;
+      const rect = card.getBoundingClientRect();
+      const cardCenterX = rect.left + rect.width / 2;
+      const dist = Math.abs(cardCenterX - centerX);
+      const t = Math.min(dist / maxDist, 1);
+      const s = 1 + (1 - t) * (1 - t) * 0.08;
+      const o = 0.45 + (1 - t) * 0.55;
+      card.style.transform = 'scale(' + s + ')';
+      card.style.opacity = String(o);
+    });
+  }
+
+  function loop() {
+    if (!hovered) {
+      scrollPos += speed;
+      const totalW = getCardWidth() * cardCount;
+      if (scrollPos >= totalW) scrollPos -= totalW;
+      track.style.transform = 'translateX(' + (-scrollPos) + 'px)';
+    }
+    updateParallax();
+    rafId = requestAnimationFrame(loop);
+  }
+
+  track.addEventListener('click', function(e) {
+    const card = e.target.closest('.scroll-card');
+    if (!card) return;
+    const allCards = track.querySelectorAll('.scroll-card');
+    if (card === selected) {
+      card.classList.remove('selected');
+      selected = null;
+    } else {
+      allCards.forEach(function(c) { c.classList.remove('selected'); });
+      card.classList.add('selected');
+      selected = card;
+      updateParallax();
+    }
+  });
+
+  stage.addEventListener('mouseenter', function() { hovered = true; });
+  stage.addEventListener('mouseleave', function() {
+    hovered = false;
+    if (selected) {
+      selected.classList.remove('selected');
+      selected = null;
+      updateParallax();
+    }
+  });
+
+  rafId = requestAnimationFrame(loop);
+})();
 </script>
 
 </body>
