@@ -1,0 +1,5 @@
+# API keys
+*.env
+
+# Backup files
+*_backup.*

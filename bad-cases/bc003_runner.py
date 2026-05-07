@@ -9,7 +9,7 @@ BC#003 · 当模型用"编故事"绕开身份保密规则
 .env 格式：
     DASHSCOPE_API_KEY=sk-70dbbd8ffb074595bcbbd2f65ce7aa31      # 千问 (Qwen-Plus)
     DOUBAO_API_KEY=ark-5a788882-8fa0-406d-af86-8b9932f436d8-3b8c5         # 豆包 (Doubao-Pro)
-    DOUBAO_BASE_URL=https://ark.volces.com/api/v3   # 豆包 endpoint
+    DOUBAO_BASE_URL=https://ark.volcengine.com/api/v3   # 豆包 endpoint
     DOUBAO_MODEL_ID=ep-20260501165101-d6zhv
 
 运行：
