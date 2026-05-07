@@ -1064,10 +1064,11 @@ window.addEventListener('pointermove', (e) => {
   if (cardCount === 0) return;
 
   let scrollPos = 0;
-  const speed = 0.4;
+  const speed = 30; // px per second (time-based)
   let selected = null;
   let hovered = false;
   let rafId = null;
+  let lastTime = 0;
 
   // Clone cards for seamless JS-driven looping
   const fragment = document.createDocumentFragment();
@@ -1101,10 +1102,11 @@ window.addEventListener('pointermove', (e) => {
       const dist = cardCenterX - centerX; // signed: negative=left, positive=right
       const absDist = Math.abs(dist);
       const t = Math.min(absDist / maxDist, 1);
-      // 3D carousel: scale up at center, rotate away at edges
-      const s = 1 + (1 - t) * (1 - t) * 0.12;
-      const ry = (dist / maxDist) * 22; // rotateY: ±22 degrees at edges
-      const o = 0.4 + (1 - t) * 0.6;
+      // 3D carousel: smooth scale + eased rotation
+      const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+      const s = 1 + (1 - t) * (1 - t) * 0.1;
+      const ry = (dist / maxDist) * 14; // rotateY: ±14° at edges, eased
+      const o = 0.45 + (1 - t) * 0.55;
       card.style.transform = 'scale(' + s + ') rotateY(' + ry + 'deg)';
       card.style.opacity = String(o);
       if (absDist < bestDist) { bestDist = absDist; bestCard = card; }
@@ -1115,9 +1117,13 @@ window.addEventListener('pointermove', (e) => {
     }
   }
 
-  function loop() {
+  function loop(now) {
+    if (lastTime === 0) lastTime = now;
+    const dt = Math.min((now - lastTime) / 1000, 0.1); // cap at 100ms
+    lastTime = now;
+
     if (!hovered) {
-      scrollPos += speed;
+      scrollPos += speed * dt;
       const totalW = getCardWidth() * cardCount;
       if (scrollPos >= totalW) scrollPos -= totalW;
       track.style.transform = 'translateX(' + (-scrollPos) + 'px)';
