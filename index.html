@@ -160,6 +160,9 @@
     border-radius: 3px;
     text-transform: uppercase;
   }
+
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+  .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
 </head>
 <body>
@@ -342,6 +345,135 @@
         <a href="#bad-cases" class="group flex items-center gap-1 text-soft hover:text-[#D97757]">查看全部 <span class="arrow-shift">↗</span></a>
         <a href="#" class="group flex items-center gap-1 text-soft hover:text-[#D97757]">RSS 订阅 <span class="arrow-shift">↗</span></a>
       </div>
+    </div>
+  </div>
+
+  <div class="h-px bg-[#E8E6E0]/5 my-16"></div>
+
+  <div class="grid md:grid-cols-12 gap-8">
+    <div class="md:col-span-3">
+      <div class="font-mono text-xs mb-2" style="color:#D97757;">PRACTICE · Completed</div>
+      <div class="text-7xl font-light" style="color:rgba(232,230,224,0.1);">C</div>
+    </div>
+    <div class="md:col-span-9">
+      <div class="font-mono text-xs text-mute mb-2 uppercase tracking-wider">Annotation Design · Multi-Scene</div>
+      <h3 class="text-2xl md:text-3xl font-light mb-6 leading-tight">跨场景标注规则文档编撰实践</h3>
+      <p class="text-soft leading-relaxed mb-8 max-w-2xl">
+        从真实数据出发，独立完成 7 类训练场景的标注规则设计：需求理解 → 维度拆解 → 优先级定义 → 速查卡提炼。
+        覆盖 SFT 与 RLHF 完整训练链路，每个场景均有专项规则与边界 case 处理。
+      </p>
+
+      <!-- 横向滚动卡片区 -->
+      <div class="relative mb-8">
+        <!-- 右侧渐隐遮罩，提示可滚动 -->
+        <div class="absolute right-0 top-0 bottom-0 w-12 pointer-events-none z-10"
+             style="background:linear-gradient(to right, transparent, #0E0E0C);"></div>
+
+        <div class="flex gap-3 overflow-x-auto pb-3 scrollbar-hide" style="scroll-snap-type:x mandatory;">
+
+          <!-- S1 单轮问答 -->
+          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 hover:border-[#D97757]/40 transition-colors duration-300"
+               style="scroll-snap-align:start; background:rgba(232,230,224,0.02);">
+            <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">单轮问答</div>
+            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
+              P0 内容准确 · 指令遵从<br>
+              P1 内容完整<br>
+              P2 表达质量
+            </div>
+            <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
+              单轮场景核心是「听懂 query」，指令遵从优先级与内容准确并列 P0。
+            </p>
+          </div>
+
+          <!-- S2 多轮对话 -->
+          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 hover:border-[#D97757]/40 transition-colors duration-300"
+               style="scroll-snap-align:start; background:rgba(232,230,224,0.02);">
+            <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">多轮对话</div>
+            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
+              P0 上下文一致 · 指代理解<br>
+              P1 回答质量
+            </div>
+            <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
+              指代不明是多轮场景最高频失守点，须在全局视角和单条 response 两个层次同时核查。
+            </p>
+          </div>
+
+          <!-- S3 Reward -->
+          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 hover:border-[#D97757]/40 transition-colors duration-300"
+               style="scroll-snap-align:start; background:rgba(232,230,224,0.02);">
+            <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">Reward Model</div>
+            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
+              P0 内容准确 · 内容完整<br>
+              P1 指令遵从 · 表达质量
+            </div>
+            <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
+              无效回答不能排末位——它会作为负样本污染偏好信号，须直接剔除不参与排序。
+            </p>
+          </div>
+
+          <!-- S4 CoT -->
+          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 hover:border-[#D97757]/40 transition-colors duration-300"
+               style="scroll-snap-align:start; background:rgba(232,230,224,0.02);">
+            <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">CoT 思维链</div>
+            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
+              think P0 推理有效 · 推理覆盖<br>
+              response P0 内容完整 · 指令
+            </div>
+            <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
+              think 与 response 捆绑进入 SFT，response 不达标则整条数据无效，两者须同等把关。
+            </p>
+          </div>
+
+          <!-- S5 RAG -->
+          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 hover:border-[#D97757]/40 transition-colors duration-300"
+               style="scroll-snap-align:start; background:rgba(232,230,224,0.02);">
+            <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">RAG</div>
+            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
+              有效性 材料可用 · prompt 可用<br>
+              P0 忠实材料 · 内容完整
+            </div>
+            <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
+              材料可用性前置于内容质量，材料不可用则后续标注全部失效。
+            </p>
+          </div>
+
+          <!-- S6 Agent -->
+          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 hover:border-[#D97757]/40 transition-colors duration-300"
+               style="scroll-snap-align:start; background:rgba(232,230,224,0.02);">
+            <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">Agent</div>
+            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
+              P0 工具调用准确 · 任务完成<br>
+              P1 内容准确 · 上下文一致
+            </div>
+            <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
+              核心反模式：以对话拖延代替工具调用。融合 CoT、多轮、单轮三类场景规则。
+            </p>
+          </div>
+
+          <!-- S7 专项（小爱同学） -->
+          <div class="flex-shrink-0 w-52 border border-[#E8E6E0]/8 p-4 hover:border-[#D97757]/40 transition-colors duration-300"
+               style="scroll-snap-align:start; background:rgba(232,230,224,0.02);">
+            <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">专项 · 语音助手</div>
+            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
+              P0 人设一致 · 信息准确<br>
+              P1 语言自然度 · 任务完成
+            </div>
+            <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
+              语音场景下模板语危害高于通用场景——「一直都在哦」比事实错误更影响训练质量。
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 统计数字 -->
+      <div class="grid grid-cols-4 gap-px bg-[#E8E6E0]/5 max-w-2xl">
+        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">7</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">标注场景</div></div>
+        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">2</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">训练范式</div></div>
+        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">全链路</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">SFT · RLHF</div></div>
+        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">独立</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">规则设计</div></div>
+      </div>
+
     </div>
   </div>
 </section>
