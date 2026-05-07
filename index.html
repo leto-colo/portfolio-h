@@ -180,10 +180,29 @@
     width: 13rem;
     position: relative;
     cursor: pointer;
-    transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1),
-                box-shadow 0.4s cubic-bezier(0.25, 0.1, 0.25, 1),
-                border-color 0.4s ease;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+                border-color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
     user-select: none;
+  }
+  /* ── 优先级色块 ── */
+  .prio-tag {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 8px;
+    font-weight: 500;
+    padding: 0 5px;
+    line-height: 16px;
+    border-radius: 2px;
+    margin-right: 3px;
+    vertical-align: middle;
+  }
+  .prio-p0 { background: rgba(217, 119, 87, 0.16); color: #D97757; }
+  .prio-p1 { background: rgba(139, 165, 255, 0.13); color: #8BA5FF; }
+  .prio-p2 { background: rgba(232, 230, 224, 0.07); color: rgba(232, 230, 224, 0.45); }
+  /* ── 中间自动高亮 ── */
+  .scroll-card.card-center {
+    border-color: rgba(139, 165, 255, 0.28) !important;
   }
   /* ── Glare Hover ── */
   .scroll-card::before {
@@ -435,12 +454,12 @@
 
           <!-- S1 单轮问答 -->
           <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
-               style="background:rgba(232,230,224,0.02);">
+               style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">单轮问答</div>
-            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
-              P0 内容准确 · 指令遵从<br>
-              P1 内容完整<br>
-              P2 表达质量
+            <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
+              <span class="prio-tag prio-p0">P0</span>内容准确 · 指令遵从<br>
+              <span class="prio-tag prio-p1">P1</span>内容完整<br>
+              <span class="prio-tag prio-p2">P2</span>表达质量
             </div>
             <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
               单轮场景核心是「听懂 query」，指令遵从优先级与内容准确并列 P0。
@@ -449,11 +468,11 @@
 
           <!-- S2 多轮对话 -->
           <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
-               style="background:rgba(232,230,224,0.02);">
+               style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">多轮对话</div>
-            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
-              P0 上下文一致 · 指代理解<br>
-              P1 回答质量
+            <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
+              <span class="prio-tag prio-p0">P0</span>上下文一致 · 指代理解<br>
+              <span class="prio-tag prio-p1">P1</span>回答质量
             </div>
             <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
               指代不明是多轮场景最高频失守点，须在全局视角和单条 response 两个层次同时核查。
@@ -462,11 +481,11 @@
 
           <!-- S3 Reward -->
           <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
-               style="background:rgba(232,230,224,0.02);">
+               style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">Reward Model</div>
-            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
-              P0 内容准确 · 内容完整<br>
-              P1 指令遵从 · 表达质量
+            <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
+              <span class="prio-tag prio-p0">P0</span>内容准确 · 内容完整<br>
+              <span class="prio-tag prio-p1">P1</span>指令遵从 · 表达质量
             </div>
             <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
               无效回答不能排末位——它会作为负样本污染偏好信号，须直接剔除不参与排序。
@@ -475,11 +494,11 @@
 
           <!-- S4 CoT -->
           <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
-               style="background:rgba(232,230,224,0.02);">
+               style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">CoT 思维链</div>
-            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
-              think P0 推理有效 · 推理覆盖<br>
-              response P0 内容完整 · 指令
+            <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
+              <span class="prio-tag prio-p0">P0</span>think 推理有效 · 推理覆盖<br>
+              <span class="prio-tag prio-p0">P0</span>response 内容完整 · 指令
             </div>
             <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
               think 与 response 捆绑进入 SFT，response 不达标则整条数据无效，两者须同等把关。
@@ -488,11 +507,11 @@
 
           <!-- S5 RAG -->
           <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
-               style="background:rgba(232,230,224,0.02);">
+               style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">RAG</div>
-            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
-              有效性 材料可用 · prompt 可用<br>
-              P0 忠实材料 · 内容完整
+            <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
+              <span class="prio-tag prio-p1">P1</span>材料可用 · prompt 可用<br>
+              <span class="prio-tag prio-p0">P0</span>忠实材料 · 内容完整
             </div>
             <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
               材料可用性前置于内容质量，材料不可用则后续标注全部失效。
@@ -501,11 +520,11 @@
 
           <!-- S6 Agent -->
           <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
-               style="background:rgba(232,230,224,0.02);">
+               style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">Agent</div>
-            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
-              P0 工具调用准确 · 任务完成<br>
-              P1 内容准确 · 上下文一致
+            <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
+              <span class="prio-tag prio-p0">P0</span>工具调用准确 · 任务完成<br>
+              <span class="prio-tag prio-p1">P1</span>内容准确 · 上下文一致
             </div>
             <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
               核心反模式：以对话拖延代替工具调用。融合 CoT、多轮、单轮三类场景规则。
@@ -514,11 +533,11 @@
 
           <!-- S7 专项（小爱同学） -->
           <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
-               style="background:rgba(232,230,224,0.02);">
+               style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">专项 · 语音助手</div>
-            <div class="font-mono text-[9px] mb-3 leading-relaxed" style="color:rgba(139,165,255,0.7);">
-              P0 人设一致 · 信息准确<br>
-              P1 语言自然度 · 任务完成
+            <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
+              <span class="prio-tag prio-p0">P0</span>人设一致 · 信息准确<br>
+              <span class="prio-tag prio-p1">P1</span>语言自然度 · 任务完成
             </div>
             <p class="text-[11px] leading-relaxed" style="color:rgba(232,230,224,0.45);">
               语音场景下模板语危害高于通用场景——「一直都在哦」比事实错误更影响训练质量。
@@ -1068,8 +1087,12 @@ window.addEventListener('pointermove', (e) => {
     const centerX = stageRect.left + stageRect.width / 2;
     const maxDist = stageRect.width / 2;
 
+    let bestCard = null;
+    let bestDist = Infinity;
+
     const allCards = track.querySelectorAll('.scroll-card');
-    allCards.forEach(card => {
+    allCards.forEach(function(card) {
+      card.classList.remove('card-center');
       if (card === selected) return;
       const rect = card.getBoundingClientRect();
       const cardCenterX = rect.left + rect.width / 2;
@@ -1079,7 +1102,13 @@ window.addEventListener('pointermove', (e) => {
       const o = 0.45 + (1 - t) * 0.55;
       card.style.transform = 'scale(' + s + ')';
       card.style.opacity = String(o);
+      if (dist < bestDist) { bestDist = dist; bestCard = card; }
     });
+
+    // Auto-highlight center card (only when nothing is selected)
+    if (bestCard && bestDist < maxDist * 0.35 && !selected) {
+      bestCard.classList.add('card-center');
+    }
   }
 
   function loop() {
@@ -1097,14 +1126,32 @@ window.addEventListener('pointermove', (e) => {
     const card = e.target.closest('.scroll-card');
     if (!card) return;
     const allCards = track.querySelectorAll('.scroll-card');
+
+    // Second click on selected card: navigate
     if (card === selected) {
+      const href = card.getAttribute('data-href');
+      if (href && href !== '#') {
+        // Allow click-through for real links
+        return;
+      }
       card.classList.remove('selected');
       selected = null;
-    } else {
-      allCards.forEach(function(c) { c.classList.remove('selected'); });
-      card.classList.add('selected');
-      selected = card;
-      updateParallax();
+      return;
+    }
+
+    allCards.forEach(function(c) { c.classList.remove('selected'); });
+    card.classList.add('selected');
+    selected = card;
+    updateParallax();
+  });
+
+  // Double-click on any card navigates to its data-href
+  track.addEventListener('dblclick', function(e) {
+    const card = e.target.closest('.scroll-card');
+    if (!card) return;
+    const href = card.getAttribute('data-href');
+    if (href && href !== '#') {
+      window.open(href, '_blank');
     }
   });
 
