@@ -168,12 +168,14 @@
   .scroll-stage {
     overflow: hidden;
     position: relative;
+    perspective: 1200px;
   }
   .scroll-track-js {
     display: flex;
     gap: 0.75rem;
     width: max-content;
     will-change: transform;
+    transform-style: preserve-3d;
   }
   .scroll-card {
     flex-shrink: 0;
@@ -228,7 +230,7 @@
   .scroll-card.selected {
     border-color: rgba(217, 119, 87, 0.6) !important;
     box-shadow: 0 0 24px rgba(217, 119, 87, 0.15), 0 0 64px rgba(217, 119, 87, 0.06);
-    transform: scale(1.08);
+    transform: scale(1.12) rotateY(0deg);
     opacity: 1 !important;
     z-index: 3;
   }
@@ -1096,16 +1098,18 @@ window.addEventListener('pointermove', (e) => {
       if (card === selected) return;
       const rect = card.getBoundingClientRect();
       const cardCenterX = rect.left + rect.width / 2;
-      const dist = Math.abs(cardCenterX - centerX);
-      const t = Math.min(dist / maxDist, 1);
-      const s = 1 + (1 - t) * (1 - t) * 0.08;
-      const o = 0.45 + (1 - t) * 0.55;
-      card.style.transform = 'scale(' + s + ')';
+      const dist = cardCenterX - centerX; // signed: negative=left, positive=right
+      const absDist = Math.abs(dist);
+      const t = Math.min(absDist / maxDist, 1);
+      // 3D carousel: scale up at center, rotate away at edges
+      const s = 1 + (1 - t) * (1 - t) * 0.12;
+      const ry = (dist / maxDist) * 22; // rotateY: ±22 degrees at edges
+      const o = 0.4 + (1 - t) * 0.6;
+      card.style.transform = 'scale(' + s + ') rotateY(' + ry + 'deg)';
       card.style.opacity = String(o);
-      if (dist < bestDist) { bestDist = dist; bestCard = card; }
+      if (absDist < bestDist) { bestDist = absDist; bestCard = card; }
     });
 
-    // Auto-highlight center card (only when nothing is selected)
     if (bestCard && bestDist < maxDist * 0.35 && !selected) {
       bestCard.classList.add('card-center');
     }
