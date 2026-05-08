@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -204,7 +204,7 @@
   .prio-p2 { background: rgba(232, 230, 224, 0.07); color: rgba(232, 230, 224, 0.45); }
   /* ── 中间自动高亮 ── */
   .scroll-card.card-center {
-    border-color: rgba(139, 165, 255, 0.28) !important;
+    box-shadow: inset 0 0 0 1px rgba(139, 165, 255, 0.28) !important;
   }
   /* ── Glare Hover ── */
   .scroll-card::before {
@@ -228,8 +228,9 @@
   }
   /* ── 选中态 ── */
   .scroll-card.selected {
-    border-color: rgba(217, 119, 87, 0.6) !important;
-    box-shadow: 0 0 24px rgba(217, 119, 87, 0.15), 0 0 64px rgba(217, 119, 87, 0.06);
+    box-shadow: inset 0 0 0 1px rgba(217, 119, 87, 0.6),
+                0 0 24px rgba(217, 119, 87, 0.15),
+                0 0 64px rgba(217, 119, 87, 0.06) !important;
     transform: scale(1.12) rotateY(0deg);
     opacity: 1 !important;
     z-index: 3;
@@ -455,7 +456,7 @@
         <div class="scroll-track-js" id="scrollTrack">
 
           <!-- S1 单轮问答 -->
-          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
+          <div class="scroll-card flex-shrink-0 p-4" style="box-shadow:inset 0 0 0 1px rgba(232,230,224,0.08)"
                style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">单轮问答</div>
             <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
@@ -469,7 +470,7 @@
           </div>
 
           <!-- S2 多轮对话 -->
-          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
+          <div class="scroll-card flex-shrink-0 p-4" style="box-shadow:inset 0 0 0 1px rgba(232,230,224,0.08)"
                style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">多轮对话</div>
             <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
@@ -482,7 +483,7 @@
           </div>
 
           <!-- S3 Reward -->
-          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
+          <div class="scroll-card flex-shrink-0 p-4" style="box-shadow:inset 0 0 0 1px rgba(232,230,224,0.08)"
                style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">Reward Model</div>
             <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
@@ -495,7 +496,7 @@
           </div>
 
           <!-- S4 CoT -->
-          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
+          <div class="scroll-card flex-shrink-0 p-4" style="box-shadow:inset 0 0 0 1px rgba(232,230,224,0.08)"
                style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">CoT 思维链</div>
             <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
@@ -508,7 +509,7 @@
           </div>
 
           <!-- S5 RAG -->
-          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
+          <div class="scroll-card flex-shrink-0 p-4" style="box-shadow:inset 0 0 0 1px rgba(232,230,224,0.08)"
                style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">RAG</div>
             <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
@@ -521,7 +522,7 @@
           </div>
 
           <!-- S6 Agent -->
-          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
+          <div class="scroll-card flex-shrink-0 p-4" style="box-shadow:inset 0 0 0 1px rgba(232,230,224,0.08)"
                style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">Agent</div>
             <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
@@ -534,7 +535,7 @@
           </div>
 
           <!-- S7 专项（小爱同学） -->
-          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
+          <div class="scroll-card flex-shrink-0 p-4" style="box-shadow:inset 0 0 0 1px rgba(232,230,224,0.08)"
                style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">专项 · 语音助手</div>
             <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
@@ -968,7 +969,7 @@ if (ticksGroup) {
     line.setAttribute('x1', x1); line.setAttribute('y1', y1);
     line.setAttribute('x2', x2); line.setAttribute('y2', y2);
     line.setAttribute('stroke', '#E8E6E0'); line.setAttribute('stroke-width', '1');
-    line.setAttribute('opacity', i % 3 === 0 ? '0.6' : '0.25');
+    line.setAttribute('opacity', '0'); // 初始透明，冷启动动画逐条点亮
     ticksGroup.appendChild(line);
   }
 }
