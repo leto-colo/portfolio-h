@@ -898,64 +898,127 @@ heroTimeline.to('.counter', {
   snap: { innerText: 1 }
 }, 1.6);
 
-// Step 4: 几何眼睛冷启动序列
+// Step 4: 机械眼冷启动 — 通电 → 校准 → 锁定
 // eyeBootComplete 在 Section 5 用 var 提升声明，此处直接使用
 
-// 4b: 整体 scale 0.85 → 1 + opacity 0 → 1
-gsap.set('#eye-wrapper', { scale: 0.85, opacity: 0, transformOrigin: 'center center' });
-heroTimeline.to('#eye-wrapper', {
-  scale: 1,
-  opacity: 1,
-  duration: 1.0,
-  ease: 'power3.out'
+// -- 2.0s PHASE 1: POWER ON --
+heroTimeline.set('#eye-wrapper', { opacity: 1 }, 2.0);
+heroTimeline.to('#hero-ambient', { opacity: 1, duration: 0.5, ease: 'power2.in' }, 2.0);
+
+// 外圈通电：stroke-dasharray 绘制
+heroTimeline.add(() => {
+  const outer = document.querySelector('#hero svg circle[r="180"]');
+  if (!outer) return;
+  const circ = 2 * Math.PI * 180;
+  gsap.set(outer, { strokeDasharray: circ, strokeDashoffset: circ, stroke: '#D97757', strokeWidth: 0.8 });
+  gsap.to(outer, { strokeDashoffset: 0, duration: 0.8, ease: 'power3.in' });
 }, 2.0);
 
-// 4c: 刻度线逐条出现（stagger）
+// 角落标签：逐个 glitch scramble 出现
 heroTimeline.add(() => {
-  const tickLines = document.querySelectorAll('#ticks line');
-  gsap.set(tickLines, { opacity: 0 });
-  gsap.to(tickLines, {
-    opacity: (i, el) => (i % 3 === 0 ? 0.6 : 0.25),
-    duration: 0.25,
-    stagger: 0.06,
-    ease: 'power2.out'
+  const texts = document.querySelectorAll('#eye-wrapper text');
+  if (texts.length === 0) return;
+  const noise = '01<>{}[]#@$%Xx.';
+  const originals = [];
+  texts.forEach(el => { originals.push(el.textContent); el.setAttribute('opacity', '0'); });
+  texts.forEach((el, idx) => {
+    const final = originals[idx];
+    let f = 0;
+    const iv = setInterval(() => {
+      f++;
+      if (f <= 8) {
+        el.textContent = final.split('').map(c =>
+          Math.random() < 0.55 ? noise[Math.floor(Math.random() * noise.length)] : c
+        ).join('');
+        el.setAttribute('opacity', String(Math.min(1, f / 5)));
+      } else {
+        el.textContent = final;
+        el.setAttribute('opacity', idx === 3 ? '0.5' : '0.3');
+        clearInterval(iv);
+      }
+    }, 40 + idx * 15);
   });
-}, 2.5);
+}, 2.2);
 
-// 4d: 内圈从 scale(0) 弹出
-gsap.set('#ring-inner', { scale: 0, transformOrigin: '200px 200px' });
+// -- 2.6s PHASE 2: STRUCTURE --
+// 中圈：旋转扭入（像拧镜头）
+gsap.set('#ring-mid', { rotation: -9, transformOrigin: '200 200', opacity: 0 });
+heroTimeline.to('#ring-mid', {
+  rotation: 0,
+  opacity: 1,
+  duration: 0.55,
+  ease: 'power4.out'
+}, 2.6);
+
+// 刻度线：从中心点炸开
+heroTimeline.add(() => {
+  const lines = document.querySelectorAll('#ticks line');
+  if (lines.length === 0) return;
+  const origins = [];
+  lines.forEach(l => {
+    origins.push({ x1: +l.getAttribute('x1'), y1: +l.getAttribute('y1'),
+                   x2: +l.getAttribute('x2'), y2: +l.getAttribute('y2') });
+  });
+  gsap.fromTo(lines,
+    { attr: { x1: 200, y1: 200, x2: 200, y2: 200 }, opacity: 0 },
+    { attr: (i) => origins[i], opacity: (i) => (i % 3 === 0 ? 0.6 : 0.25),
+      duration: 0.55, stagger: 0.03, ease: 'power3.in' }
+  );
+}, 2.8);
+
+// 内圈：光圈开孔
+gsap.set('#ring-inner', { scale: 0.2, transformOrigin: '200 200', opacity: 0 });
 heroTimeline.to('#ring-inner', {
   scale: 1,
+  opacity: 1,
   duration: 0.55,
-  ease: 'back.out(1.8)'
-}, 2.7);
+  ease: 'power3.in'
+}, 3.1);
 
-// 4e: 瞳孔从 scale(0) 弹出，比内圈稍晚
-gsap.set('#pupil', { scale: 0, transformOrigin: '200px 200px' });
+// -- 3.2s PHASE 3: FOCUS LOCK --
+// 瞳孔：snap + 微振荡定居
+gsap.set('#pupil', { scale: 0, transformOrigin: '200 200' });
 heroTimeline.to('#pupil', {
   scale: 1,
-  duration: 0.45,
-  ease: 'back.out(2.2)'
-}, 3.0);
+  duration: 0.22,
+  ease: 'power4.out',
+  onComplete: () => {
+    const el = document.getElementById('pupil');
+    if (!el) return;
+    let shakes = 5;
+    const iv = setInterval(() => {
+      const a = shakes * 0.4;
+      el.style.transform = `translate(${(Math.random() - 0.5) * a}px, ${(Math.random() - 0.5) * a}px)`;
+      shakes--;
+      if (shakes <= 0) { clearInterval(iv); el.style.transform = ''; }
+    }, 30);
+  }
+}, 3.2);
 
-// 4f: coord-text 校准数字跳动 0.00→0.50，完成后解锁鼠标跟随
+// 全局对焦：blur → sharp
+heroTimeline.to('#eye-container', { filter: 'blur(2.5px)', duration: 0.1 }, 3.55);
+heroTimeline.to('#eye-container', { filter: 'blur(0px)', duration: 0.35, ease: 'power2.in' }, 3.65);
+
+// 坐标标定：数字竞赛 → lock at 0.50
 heroTimeline.add(() => {
-  const coordEl = document.getElementById('coord-text');
-  if (!coordEl) return;
-  let t = 0;
-  const dur = 40; // frames
-  const interval = setInterval(() => {
-    t++;
-    const v = (t / dur * 0.5).toFixed(2);
-    const noise = t < dur ? (Math.random() * 0.08 - 0.04).toFixed(2) : '0.00';
-    coordEl.textContent = `x=${(parseFloat(v) + parseFloat(noise)).toFixed(2).replace('-0.', '0.')} · y=${(parseFloat(v) + parseFloat(noise)).toFixed(2).replace('-0.', '0.')}`;
-    if (t >= dur) {
-      clearInterval(interval);
-      coordEl.textContent = 'x=0.50 · y=0.50';
-      eyeBootComplete = true; // 解锁鼠标跟随
+  const el = document.getElementById('coord-text');
+  if (!el) return;
+  let f = 0;
+  const dur = 32;
+  const iv = setInterval(() => {
+    f++;
+    const p = f / dur;
+    const t = 0.5 * Math.min(1, p * 1.15);
+    const n = p < 0.6 ? (Math.random() - 0.5) * 0.4 : (Math.random() - 0.5) * 0.05 * (1 - p);
+    const v = Math.max(0, Math.min(1, t + n)).toFixed(2);
+    el.textContent = `x=${v} · y=${v}`;
+    if (f >= dur) {
+      clearInterval(iv);
+      el.textContent = 'x=0.50 · y=0.50';
+      eyeBootComplete = true;
     }
-  }, 30);
-}, 3.1);
+  }, 26);
+}, 3.8);
 
 /* === 3. Glitch 关键词("AI 训练师") === */
 function runGlitch(isEnhanced = false) {
