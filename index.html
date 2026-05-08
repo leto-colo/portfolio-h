@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -204,7 +204,7 @@
   .prio-p2 { background: rgba(232, 230, 224, 0.07); color: rgba(232, 230, 224, 0.45); }
   /* ── 中间自动高亮 ── */
   .scroll-card.card-center {
-    box-shadow: inset 0 0 0 1px rgba(139, 165, 255, 0.28) !important;
+    border-color: rgba(139, 165, 255, 0.28) !important;
   }
   /* ── Glare Hover ── */
   .scroll-card::before {
@@ -228,9 +228,8 @@
   }
   /* ── 选中态 ── */
   .scroll-card.selected {
-    box-shadow: inset 0 0 0 1px rgba(217, 119, 87, 0.6),
-                0 0 24px rgba(217, 119, 87, 0.15),
-                0 0 64px rgba(217, 119, 87, 0.06) !important;
+    border-color: rgba(217, 119, 87, 0.6) !important;
+    box-shadow: 0 0 24px rgba(217, 119, 87, 0.15), 0 0 64px rgba(217, 119, 87, 0.06);
     transform: scale(1.12) rotateY(0deg);
     opacity: 1 !important;
     z-index: 3;
@@ -456,7 +455,7 @@
         <div class="scroll-track-js" id="scrollTrack">
 
           <!-- S1 单轮问答 -->
-          <div class="scroll-card flex-shrink-0 p-4" style="box-shadow:inset 0 0 0 1px rgba(232,230,224,0.08)"
+          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
                style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">单轮问答</div>
             <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
@@ -470,7 +469,7 @@
           </div>
 
           <!-- S2 多轮对话 -->
-          <div class="scroll-card flex-shrink-0 p-4" style="box-shadow:inset 0 0 0 1px rgba(232,230,224,0.08)"
+          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
                style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">多轮对话</div>
             <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
@@ -483,7 +482,7 @@
           </div>
 
           <!-- S3 Reward -->
-          <div class="scroll-card flex-shrink-0 p-4" style="box-shadow:inset 0 0 0 1px rgba(232,230,224,0.08)"
+          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
                style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">Reward Model</div>
             <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
@@ -496,7 +495,7 @@
           </div>
 
           <!-- S4 CoT -->
-          <div class="scroll-card flex-shrink-0 p-4" style="box-shadow:inset 0 0 0 1px rgba(232,230,224,0.08)"
+          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
                style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">CoT 思维链</div>
             <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
@@ -509,7 +508,7 @@
           </div>
 
           <!-- S5 RAG -->
-          <div class="scroll-card flex-shrink-0 p-4" style="box-shadow:inset 0 0 0 1px rgba(232,230,224,0.08)"
+          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
                style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">RAG</div>
             <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
@@ -522,7 +521,7 @@
           </div>
 
           <!-- S6 Agent -->
-          <div class="scroll-card flex-shrink-0 p-4" style="box-shadow:inset 0 0 0 1px rgba(232,230,224,0.08)"
+          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
                style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">Agent</div>
             <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
@@ -535,7 +534,7 @@
           </div>
 
           <!-- S7 专项（小爱同学） -->
-          <div class="scroll-card flex-shrink-0 p-4" style="box-shadow:inset 0 0 0 1px rgba(232,230,224,0.08)"
+          <div class="scroll-card flex-shrink-0 border border-[#E8E6E0]/8 p-4"
                style="background:rgba(232,230,224,0.02);" data-href="#">
             <div class="font-mono text-[10px] mb-3 uppercase tracking-wider" style="color:#D97757;">专项 · 语音助手</div>
             <div class="text-[9px] mb-3 leading-relaxed" style="color:rgba(232,230,224,0.5);">
@@ -899,11 +898,64 @@ heroTimeline.to('.counter', {
   snap: { innerText: 1 }
 }, 1.6);
 
-// Step 4: 几何眼睛延迟出现
-heroTimeline.to('.hero-eye', {
+// Step 4: 几何眼睛冷启动序列
+// eyeBootComplete 在 Section 5 用 var 提升声明，此处直接使用
+
+// 4b: 整体 scale 0.85 → 1 + opacity 0 → 1
+gsap.set('#eye-wrapper', { scale: 0.85, opacity: 0, transformOrigin: 'center center' });
+heroTimeline.to('#eye-wrapper', {
+  scale: 1,
   opacity: 1,
-  duration: 1.0
-}, 2.2);
+  duration: 1.0,
+  ease: 'power3.out'
+}, 2.0);
+
+// 4c: 刻度线逐条出现（stagger）
+heroTimeline.add(() => {
+  const tickLines = document.querySelectorAll('#ticks line');
+  gsap.set(tickLines, { opacity: 0 });
+  gsap.to(tickLines, {
+    opacity: (i, el) => (i % 3 === 0 ? 0.6 : 0.25),
+    duration: 0.25,
+    stagger: 0.06,
+    ease: 'power2.out'
+  });
+}, 2.5);
+
+// 4d: 内圈从 scale(0) 弹出
+gsap.set('#ring-inner', { scale: 0, transformOrigin: '200px 200px' });
+heroTimeline.to('#ring-inner', {
+  scale: 1,
+  duration: 0.55,
+  ease: 'back.out(1.8)'
+}, 2.7);
+
+// 4e: 瞳孔从 scale(0) 弹出，比内圈稍晚
+gsap.set('#pupil', { scale: 0, transformOrigin: '200px 200px' });
+heroTimeline.to('#pupil', {
+  scale: 1,
+  duration: 0.45,
+  ease: 'back.out(2.2)'
+}, 3.0);
+
+// 4f: coord-text 校准数字跳动 0.00→0.50，完成后解锁鼠标跟随
+heroTimeline.add(() => {
+  const coordEl = document.getElementById('coord-text');
+  if (!coordEl) return;
+  let t = 0;
+  const dur = 40; // frames
+  const interval = setInterval(() => {
+    t++;
+    const v = (t / dur * 0.5).toFixed(2);
+    const noise = t < dur ? (Math.random() * 0.08 - 0.04).toFixed(2) : '0.00';
+    coordEl.textContent = `x=${(parseFloat(v) + parseFloat(noise)).toFixed(2).replace('-0.', '0.')} · y=${(parseFloat(v) + parseFloat(noise)).toFixed(2).replace('-0.', '0.')}`;
+    if (t >= dur) {
+      clearInterval(interval);
+      coordEl.textContent = 'x=0.50 · y=0.50';
+      eyeBootComplete = true; // 解锁鼠标跟随
+    }
+  }, 30);
+}, 3.1);
 
 /* === 3. Glitch 关键词("AI 训练师") === */
 function runGlitch(isEnhanced = false) {
@@ -957,6 +1009,9 @@ tick();
 setInterval(tick, 1000);
 
 /* === 5. 几何眼睛刻度 + 鼠标跟随 === */
+// eyeBootComplete 提升至此，供下方 animateEye 引用
+if (typeof eyeBootComplete === 'undefined') { var eyeBootComplete = false; }
+
 const ticksGroup = document.getElementById('ticks');
 if (ticksGroup) {
   for (let i = 0; i < 12; i++) {
@@ -997,7 +1052,7 @@ if (hasEye) {
   });
 }
 
-// 偶发扫视，让机械眼更有”灵动感”
+// 偶发扫视，让机械眼更有"灵动感"
 setInterval(() => {
   const idle = Date.now() - lastMoveAt > 900;
   if (idle || Math.random() < 0.35) {
@@ -1011,6 +1066,11 @@ function animateEye() {
   if (!hasEye) return;
   phase += 0.028;
   const lively = true;
+  // 冷启动未完成时，眼睛锁定在中心，不响应鼠标
+  if (!eyeBootComplete) {
+    requestAnimationFrame(animateEye);
+    return;
+  }
   const idle = Date.now() - lastMoveAt > 600;
   const microX = lively ? (idle ? Math.sin(phase) * 0.07 : Math.sin(phase * 2.1) * 0.02) : 0;
   const microY = lively ? (idle ? Math.cos(phase * 1.25) * 0.06 : Math.cos(phase * 1.9) * 0.018) : 0;
