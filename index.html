@@ -380,25 +380,24 @@
 
   <div class="grid md:grid-cols-12 gap-8">
     <div class="md:col-span-3">
-      <div class="font-mono text-xs mb-2" style="color:#D97757;">EXPERIMENT · Active</div>
+      <div class="font-mono text-xs mb-2" style="color:#D97757;">EXPERIMENT · Completed</div>
       <div class="text-7xl font-light" style="color:rgba(232,230,224,0.1);">A</div>
     </div>
     <div class="md:col-span-9">
       <div class="font-mono text-xs text-mute mb-2 uppercase tracking-wider">Prompt Engineering · Evaluation</div>
       <h3 class="text-2xl md:text-3xl font-light mb-6 leading-tight">中文长文本摘要的 Prompt 优化基准实验</h3>
       <p class="text-soft leading-relaxed mb-8 max-w-2xl">
-        同一篇文章,GPT-5 / Claude 4.7 / Qwen3 / DeepSeek / Doubao 给出的摘要在「关键信息覆盖度」「事实准确性」「冗余度」上差异巨大。我想知道:Prompt 设计本身,到底能在多大程度上抹平模型差距?
+        200 条数据，5 种 Prompt 策略，2 个模型，4 个评分维度。Prompt 设计的差异，对长文本摘要的最终质量到底意味着什么？结构引导让 Qwen 幻觉率从 85% 降至 30%；思维链让 Doubao 拿到 20/20 完美分。
       </p>
       <div class="grid grid-cols-4 gap-px bg-[#E8E6E0]/5 mb-8 max-w-2xl">
-        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">6</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">Prompt 版本</div></div>
-        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">5</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">主流模型</div></div>
-        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">5维</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">评估体系</div></div>
-        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">100</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">测试样本</div></div>
+        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">5</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">Prompt 策略</div></div>
+        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">2</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">测试模型</div></div>
+        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">4维</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">评估体系</div></div>
+        <div class="bg-[#0E0E0C] p-4"><div class="text-2xl font-light mb-1">200</div><div class="text-[10px] font-mono text-mute uppercase tracking-wider">数据条目</div></div>
       </div>
       <div class="flex flex-wrap gap-4 text-sm">
-        <a href="https://github.com/LiTianHao" class="group flex items-center gap-1 text-soft hover:text-[#D97757]">GitHub Repo <span class="arrow-shift">↗</span></a>
-        <a href="#" class="group flex items-center gap-1 text-soft hover:text-[#D97757]">完整报告 PDF <span class="arrow-shift">↗</span></a>
-        <a href="#" class="group flex items-center gap-1 text-soft hover:text-[#D97757]">数据集 <span class="arrow-shift">↗</span></a>
+        <a href="projects/article.html?slug=PA001" class="group flex items-center gap-1 text-soft hover:text-[#D97757]">阅读完整报告 <span class="arrow-shift">↗</span></a>
+        <a href="https://github.com/leto-colo/portfolio-h" class="group flex items-center gap-1 text-soft hover:text-[#D97757]">GitHub <span class="arrow-shift">↗</span></a>
       </div>
     </div>
   </div>

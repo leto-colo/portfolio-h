@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project · LiTianHao</title>
+<meta name="description" content="Project 系列文章 by LiTianHao">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+
+<style>
+  :root {
+    --bg: #0E0E0C;
+    --bg-card: #1A1A17;
+    --text: #E8E6E0;
+    --text-soft: rgba(232, 230, 224, 0.7);
+    --text-mute: rgba(232, 230, 224, 0.45);
+    --text-faint: rgba(232, 230, 224, 0.3);
+    --accent: #D97757;
+    --border: rgba(232, 230, 224, 0.08);
+    --border-faint: rgba(232, 230, 224, 0.05);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body { overflow-x: hidden; }
+  ::-webkit-scrollbar { width: 0; }
+
+  .font-mono { font-family: 'IBM Plex Mono', monospace; }
+
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(14, 14, 12, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-faint);
+  }
+  .nav-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .logo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .logo .brace { color: var(--accent); }
+  .nav-actions {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--text-mute);
+  }
+  .nav-actions a, .nav-actions button {
+    color: var(--text-mute);
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    padding: 0;
+    transition: color 0.2s ease;
+  }
+  .nav-actions a:hover, .nav-actions button:hover { color: var(--accent); }
+
+  .article-wrapper {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+
+  .article-meta-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 48px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-mute);
+  }
+  .badge {
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  .article-body h1 {
+    font-size: 32px;
+    font-weight: 300;
+    line-height: 1.25;
+    margin-bottom: 32px;
+    letter-spacing: -0.01em;
+  }
+  .article-body h2 {
+    font-size: 21px;
+    font-weight: 400;
+    margin: 56px 0 16px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border-faint);
+    letter-spacing: -0.01em;
+  }
+  .article-body h3 {
+    font-size: 17px;
+    font-weight: 500;
+    margin: 36px 0 12px;
+    color: var(--text);
+  }
+  .article-body p {
+    margin: 16px 0;
+    color: var(--text-soft);
+    font-size: 16px;
+    line-height: 1.8;
+  }
+  .article-body strong { color: var(--text); font-weight: 500; }
+  .article-body em { color: var(--text-soft); font-style: italic; }
+
+  .article-body ul, .article-body ol {
+    margin: 16px 0;
+    padding-left: 24px;
+  }
+  .article-body li { margin: 8px 0; line-height: 1.7; color: var(--text-soft); }
+  .article-body li::marker { color: var(--accent); }
+
+  .article-body blockquote {
+    border-left: 2px solid var(--accent);
+    padding: 4px 0 4px 20px;
+    margin: 24px 0;
+    color: var(--text-mute);
+    font-style: normal;
+  }
+  .article-body blockquote p { margin: 8px 0; }
+  .article-body blockquote strong { color: var(--text-soft); }
+
+  .article-body code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    background: rgba(232, 230, 224, 0.06);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--text);
+  }
+  .article-body pre {
+    background: #0a0a09;
+    border: 1px solid var(--border-faint);
+    border-radius: 4px;
+    padding: 20px;
+    margin: 24px 0;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .article-body pre code {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    color: var(--text-soft);
+    font-size: 13px;
+  }
+
+  .article-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 14px;
+    border: 1px solid var(--border);
+  }
+  .article-body th {
+    background: rgba(217, 119, 87, 0.05);
+    color: var(--text);
+    font-weight: 500;
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .article-body th:last-child { border-right: none; }
+  .article-body td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-faint);
+    border-right: 1px solid var(--border-faint);
+    color: var(--text-soft);
+    vertical-align: top;
+  }
+  .article-body td:last-child { border-right: none; }
+  .article-body tr:last-child td { border-bottom: none; }
+  .article-body td strong { color: var(--text); }
+
+  .article-body hr {
+    border: none;
+    border-top: 1px solid var(--border-faint);
+    margin: 48px 0;
+  }
+
+  .article-footer {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border-faint);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+  }
+  .article-footer a {
+    color: var(--text-mute);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .article-footer a:hover { color: var(--accent); }
+  .article-footer .right { color: var(--text-faint); }
+
+  .loading {
+    color: var(--text-mute);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    padding: 48px 0;
+  }
+  .error { padding: 48px 0; }
+  .error h3 { color: var(--accent); margin-bottom: 12px; }
+  .error p { color: var(--text-mute); font-size: 14px; line-height: 1.7; }
+
+  .toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: var(--bg);
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 100;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(8px);
+  }
+
+  @media (max-width: 640px) {
+    .article-wrapper { padding: 40px 20px 64px; }
+    .article-body h1 { font-size: 26px; }
+    .article-body h2 { font-size: 19px; margin: 40px 0 12px; padding-top: 24px; }
+    .article-body h3 { font-size: 16px; }
+    .article-body { font-size: 15px; }
+    .article-body table { font-size: 12px; }
+    .article-body th, .article-body td { padding: 8px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html" class="logo">
+      <span class="brace">{</span>&nbsp;LiTianHao&nbsp;<span class="brace">}</span>
+    </a>
+    <div class="nav-actions">
+      <a href="../index.html#work">← 返回 Work</a>
+      <button id="copy-link" type="button">复制链接</button>
+    </div>
+  </div>
+</nav>
+
+<div class="article-wrapper">
+  <div id="meta-bar" class="article-meta-bar"></div>
+  <div id="article-content" class="article-body">
+    <div class="loading">正在加载文章...</div>
+  </div>
+  <div class="article-footer">
+    <a href="../index.html#work">← Work 列表</a>
+    <span class="right">© 2026 LiTianHao · build in public</span>
+  </div>
+</div>
+
+<div id="toast" class="toast">链接已复制 ✓</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const slug = (params.get('slug') || 'PA001').replace(/[^A-Za-z0-9_-]/g, '');
+
+const ARTICLE_META = {
+  'PA001': {
+    title: 'PA#001 · 中文长文本摘要的 Prompt 优化基准实验',
+    date: '2026-05-09',
+    tag: 'Evaluation',
+    models: 'Qwen-Plus · Doubao-Pro',
+  },
+};
+
+const tagColors = {
+  'Evaluation': 'background:rgba(110,231,183,0.1);color:#6EE7B7;',
+  'Prompt':     'background:rgba(217,119,87,0.12);color:#D97757;',
+};
+
+const meta = ARTICLE_META[slug];
+const metaBar = document.getElementById('meta-bar');
+
+if (meta) {
+  const tagStyle = tagColors[meta.tag] || tagColors['Evaluation'];
+  metaBar.innerHTML = `
+    <span class="badge" style="${tagStyle}">${meta.tag}</span>
+    <span>${meta.date}</span>
+    <span>·</span>
+    <span>${meta.models}</span>
+  `;
+  document.title = `${meta.title} · LiTianHao`;
+} else {
+  metaBar.innerHTML = `<span class="badge" style="${tagColors['Evaluation']}">PROJECT</span><span>${slug}</span>`;
+}
+
+marked.setOptions({
+  breaks: false,
+  gfm: true,
+  highlight: function(code, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      return hljs.highlight(code, { language: lang }).value;
+    }
+    return hljs.highlightAuto(code).value;
+  },
+});
+
+const contentEl = document.getElementById('article-content');
+
+fetch(`./${slug}.md`)
+  .then(res => {
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.text();
+  })
+  .then(md => {
+    contentEl.innerHTML = marked.parse(md);
+    contentEl.querySelectorAll('pre code').forEach(block => {
+      hljs.highlightElement(block);
+    });
+    if (slug === 'PA001') injectCharts(contentEl);
+  })
+  .catch(err => {
+    contentEl.innerHTML = `
+      <div class="error">
+        <h3>加载失败</h3>
+        <p>无法读取文章 <code>${slug}.md</code>。</p>
+        <p style="margin-top:12px;">错误信息：<code>${err.message}</code></p>
+        <p style="margin-top:12px;">请在 Live Preview 或 Vercel 环境下访问，不支持直接双击打开（file:// 协议）。</p>
+      </div>
+    `;
+  });
+
+// ========== PA001 图表注入 ==========
+function injectCharts(root) {
+
+  function makeWrap(label) {
+    const w = document.createElement('div');
+    w.style.cssText = 'margin:32px 0 40px;width:100%;';
+    const cap = document.createElement('div');
+    cap.style.cssText = 'font-family:"IBM Plex Mono",monospace;font-size:11px;color:rgba(232,230,224,0.3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;';
+    cap.textContent = label;
+    w.appendChild(cap);
+    return w;
+  }
+
+  function svgWrap(svgStr) {
+    const d = document.createElement('div');
+    d.style.cssText = 'overflow-x:auto;';
+    d.innerHTML = svgStr;
+    return d;
+  }
+
+  // Chart A: 5 策略 × 2 模型得分对比（横向条形图）
+  // Scale: 0-5, bar area x=160 to x=620 (460px), 1 unit = 92px
+  // Qwen scores: P0=3.85, P1=3.62, P2=4.58, P3=3.15, P4=4.35
+  // Doubao scores: P0=4.74, P1=4.82, P2=4.64, P3=3.96, P4=5.00
+  const strategies = [
+    { label: 'P0 基线',    qwen: 3.85, doubao: 4.74 },
+    { label: 'P1 长度约束', qwen: 3.62, doubao: 4.82 },
+    { label: 'P2 结构引导', qwen: 4.58, doubao: 4.64 },
+    { label: 'P3 受众设定', qwen: 3.15, doubao: 3.96 },
+    { label: 'P4 思维链',   qwen: 4.35, doubao: 5.00 },
+  ];
+  const BAR_X = 160, BAR_MAX = 460, UNIT = BAR_MAX / 5;
+  const ROW_H = 74, START_Y = 60;
+
+  let svgA = `<svg width="100%" viewBox="0 0 680 ${START_Y + strategies.length * ROW_H + 20}" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>PA001 五种 Prompt 策略得分对比</title>
+<rect x="${BAR_X + 0 * UNIT - 0.5}" y="10" width="1" height="${START_Y + strategies.length * ROW_H}" stroke="rgba(232,230,224,0.05)" fill="none"/>
+<rect x="${BAR_X + 1 * UNIT - 0.5}" y="10" width="1" height="${START_Y + strategies.length * ROW_H}" stroke="rgba(232,230,224,0.04)" fill="none"/>
+<rect x="${BAR_X + 2 * UNIT - 0.5}" y="10" width="1" height="${START_Y + strategies.length * ROW_H}" stroke="rgba(232,230,224,0.04)" fill="none"/>
+<rect x="${BAR_X + 3 * UNIT - 0.5}" y="10" width="1" height="${START_Y + strategies.length * ROW_H}" stroke="rgba(232,230,224,0.04)" fill="none"/>
+<rect x="${BAR_X + 4 * UNIT - 0.5}" y="10" width="1" height="${START_Y + strategies.length * ROW_H}" stroke="rgba(232,230,224,0.04)" fill="none"/>
+<rect x="${BAR_X + 5 * UNIT - 0.5}" y="10" width="1" height="${START_Y + strategies.length * ROW_H}" stroke="rgba(232,230,224,0.05)" fill="none"/>`;
+
+  // Tick labels
+  for (let i = 0; i <= 5; i++) {
+    svgA += `<text x="${BAR_X + i * UNIT}" y="30" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="rgba(232,230,224,0.25)">${i}</text>`;
+  }
+
+  // Legend
+  svgA += `<rect x="${BAR_X}" y="40" width="10" height="8" rx="2" fill="rgba(217,119,87,0.75)"/>`;
+  svgA += `<text x="${BAR_X + 14}" y="48" font-family="IBM Plex Mono,monospace" font-size="10" fill="rgba(232,230,224,0.5)">Qwen-Plus</text>`;
+  svgA += `<rect x="${BAR_X + 90}" y="40" width="10" height="8" rx="2" fill="rgba(232,230,224,0.2)"/>`;
+  svgA += `<text x="${BAR_X + 104}" y="48" font-family="IBM Plex Mono,monospace" font-size="10" fill="rgba(232,230,224,0.5)">Doubao-Pro</text>`;
+
+  strategies.forEach((s, i) => {
+    const y = START_Y + i * ROW_H;
+    const qw = Math.round(s.qwen * UNIT);
+    const dw = Math.round(s.doubao * UNIT);
+    const isWorst = s.qwen === 3.15; // P3 is Qwen's worst
+    const isBest  = s.doubao === 5.00; // P4 Doubao is perfect
+
+    // Strategy label
+    svgA += `<text x="${BAR_X - 8}" y="${y + 14}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="11" fill="rgba(232,230,224,0.6)">${s.label}</text>`;
+
+    // Qwen bar
+    const qFill = isWorst ? 'rgba(217,119,87,0.45)' : 'rgba(217,119,87,0.72)';
+    svgA += `<rect x="${BAR_X}" y="${y}" width="${qw}" height="22" rx="2" fill="${qFill}"/>`;
+    svgA += `<text x="${BAR_X + qw + 6}" y="${y + 15}" font-family="IBM Plex Mono,monospace" font-size="11" fill="rgba(232,230,224,0.55)">${s.qwen}</text>`;
+
+    // Doubao bar
+    const dFill = isBest ? 'rgba(232,230,224,0.35)' : 'rgba(232,230,224,0.18)';
+    svgA += `<rect x="${BAR_X}" y="${y + 28}" width="${dw}" height="22" rx="2" fill="${dFill}"/>`;
+    svgA += `<text x="${BAR_X + dw + 6}" y="${y + 43}" font-family="IBM Plex Mono,monospace" font-size="11" fill="${isBest ? '#E8E6E0' : 'rgba(232,230,224,0.55)'}">${s.doubao}${isBest ? ' ★' : ''}</text>`;
+  });
+
+  svgA += `</svg>`;
+
+  // Chart B: Qwen 幻觉率（P0 85% / P1 90% / P2 30%）
+  const halluc = [
+    { label: 'P0 基线',    rate: 85, note: '17/20 条' },
+    { label: 'P1 长度约束', rate: 90, note: '18/20 条' },
+    { label: 'P2 结构引导', rate: 30, note: '6/20 条', highlight: true },
+  ];
+  const HB_X = 160, HB_MAX = 460;
+
+  let svgB = `<svg width="100%" viewBox="0 0 680 220" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>PA001 Qwen-Plus 幻觉率（准确性 ≤4 分）</title>
+<text x="${HB_X}" y="22" font-family="IBM Plex Mono,monospace" font-size="10" fill="rgba(232,230,224,0.25)">0%</text>
+<text x="${HB_X + HB_MAX * 0.5}" y="22" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="rgba(232,230,224,0.25)">50%</text>
+<text x="${HB_X + HB_MAX}" y="22" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="10" fill="rgba(232,230,224,0.25)">100%</text>`;
+
+  halluc.forEach((h, i) => {
+    const y = 40 + i * 56;
+    const bw = Math.round(h.rate / 100 * HB_MAX);
+    const fill = h.highlight ? 'rgba(110,231,183,0.3)' : 'rgba(217,119,87,0.55)';
+    const textFill = h.highlight ? '#6EE7B7' : 'rgba(232,230,224,0.6)';
+    svgB += `<text x="${HB_X - 8}" y="${y + 19}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-size="11" fill="rgba(232,230,224,0.6)">${h.label}</text>`;
+    svgB += `<rect x="${HB_X}" y="${y}" width="${HB_MAX}" height="34" rx="2" fill="rgba(232,230,224,0.03)"/>`;
+    svgB += `<rect x="${HB_X}" y="${y}" width="${bw}" height="34" rx="2" fill="${fill}"/>`;
+    svgB += `<text x="${HB_X + bw + 8}" y="${y + 13}" font-family="IBM Plex Mono,monospace" font-size="12" font-weight="500" fill="${textFill}">${h.rate}%</text>`;
+    svgB += `<text x="${HB_X + bw + 8}" y="${y + 28}" font-family="IBM Plex Mono,monospace" font-size="10" fill="rgba(232,230,224,0.35)">${h.note}</text>`;
+  });
+
+  svgB += `<line x1="${HB_X + HB_MAX * 0.5}" y1="30" x2="${HB_X + HB_MAX * 0.5}" y2="210" stroke="rgba(232,230,224,0.05)" stroke-width="1"/>`;
+  svgB += `</svg>`;
+
+  // 注入图 A：在总览结果标题前
+  const allH2 = root.querySelectorAll('h2');
+  let anchorA = null;
+  for (const h of allH2) {
+    if (h.textContent.includes('总览结果')) { anchorA = h; break; }
+  }
+  if (anchorA) {
+    const wA = makeWrap('图 A · 五种 Prompt 策略得分对比（Qwen-Plus vs Doubao-Pro）');
+    wA.appendChild(svgWrap(svgA));
+    anchorA.after(wA);
+  }
+
+  // 注入图 B：在发现二标题后
+  const allH3 = root.querySelectorAll('h3');
+  let anchorB = null;
+  for (const h of allH3) {
+    if (h.textContent.includes('发现二') || h.textContent.includes('幻觉抑制')) { anchorB = h; break; }
+  }
+  if (anchorB) {
+    const wB = makeWrap('图 B · Qwen-Plus 准确性失分率（准确性维度 ≤4 分占比）');
+    wB.appendChild(svgWrap(svgB));
+    anchorB.after(wB);
+  }
+}
+
+// 复制链接
+document.getElementById('copy-link').addEventListener('click', () => {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  });
+});
+</script>
+</body>
+</html>
