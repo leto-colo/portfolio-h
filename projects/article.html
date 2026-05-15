@@ -319,11 +319,18 @@ const ARTICLE_META = {
     tag: 'Evaluation',
     models: 'Qwen-Plus · Doubao-Pro',
   },
+  'OSINT-VLM': {
+    title: 'OSINT-VLM · 多模态目标识别与场景描述微调实验',
+    date: '2026-05-14',
+    tag: 'VLM Finetune',
+    models: 'InternVL2-8B · LoRA',
+  },
 };
 
 const tagColors = {
-  'Evaluation': 'background:rgba(110,231,183,0.1);color:#6EE7B7;',
-  'Prompt':     'background:rgba(217,119,87,0.12);color:#D97757;',
+  'Evaluation':   'background:rgba(110,231,183,0.1);color:#6EE7B7;',
+  'Prompt':       'background:rgba(217,119,87,0.12);color:#D97757;',
+  'VLM Finetune': 'background:rgba(139,165,255,0.12);color:#8BA5FF;',
 };
 
 const meta = ARTICLE_META[slug];
@@ -355,13 +362,20 @@ marked.setOptions({
 
 const contentEl = document.getElementById('article-content');
 
+function stripFrontmatter(md) {
+  if (!md.startsWith('---')) return md;
+  const end = md.indexOf('\n---', 3);
+  if (end === -1) return md;
+  return md.slice(end + 4).trimStart();
+}
+
 fetch(`./${slug}.md`)
   .then(res => {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.text();
   })
   .then(md => {
-    contentEl.innerHTML = marked.parse(md);
+    contentEl.innerHTML = marked.parse(stripFrontmatter(md));
     contentEl.querySelectorAll('pre code').forEach(block => {
       hljs.highlightElement(block);
     });
